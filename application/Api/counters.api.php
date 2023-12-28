@@ -83,6 +83,48 @@ class Counters extends DatabaseConnection
         }
         echo json_encode($res);
     }
+    public function getPendingAppointments($conn)
+    {
+        extract($_POST);
+        $res = array();
+        $data=array();
+        $sql = "CALL readPendingAppointment()";
+        if (!$conn)
+            $res = array("error" => "there is an error");
+        else {
+            $result = $conn->query($sql);
+            if ($result) {
+                while($rows = $result->fetch_assoc()){
+                        $data[]=$rows;
+                }
+                $res = array("message" => "success", "data" => $data);
+            } else {
+                $res = array("error" => "there is an error");
+            }
+        }
+        echo json_encode($res);
+    }
+    public function getTodaysSchedule($conn)
+    {
+        extract($_POST);
+        $res = array();
+        $data=array();
+        $sql = "CALL readTodaySchedule('$date')";
+        if (!$conn)
+            $res = array("error" => "there is an error");
+        else {
+            $result = $conn->query($sql);
+            if ($result) {
+                while($rows = $result->fetch_assoc()){
+                        $data[]=$rows;
+                }
+                $res = array("message" => "success", "data" => $data);
+            } else {
+                $res = array("error" => "there is an error");
+            }
+        }
+        echo json_encode($res);
+    }
 }
 
 

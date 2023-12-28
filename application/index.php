@@ -1,5 +1,7 @@
 <?php
 session_start();
+session_unset();
+session_destroy();
 include './include/links.php';
 ?>
 
@@ -26,7 +28,7 @@ include './include/links.php';
               <div class="col-xl-12">
                 <div class="auth-form">
                   <div class="error-handler"></div>
-                  <h4 class="text-center mb-4">Sign in your account</h4>
+                  <h4 class="text-center mb-4">Sign in as <strong class='text-danger fw-bold'>Admin</strong> account</h4>
                   <form>
 
 
@@ -46,7 +48,7 @@ include './include/links.php';
                                                 </div> -->
                       </div>
                       <div class="form-group forget">
-                        <a href="#">Forgot Password?</a>
+                        <a class='btn'>Forgot Password?</a>
                       </div>
                     </div>
                     <div class="text-center">
@@ -58,7 +60,13 @@ include './include/links.php';
                   <div class="new-account mt-3">
                     <p>
                       Don't have an account?
-                      <a class="text-primary" href="./page-register.html">Sign up</a>
+                      <a class="text-primary" href="./view/start.php">Sign up</a>
+                    </p>
+                  </div>
+                  <div class="mt-3">
+                    <p>
+                      You're Not Admin
+                      <a class="text-primary" href="login.php">Click Here to login</a>
                     </p>
                   </div>
                 </div>
@@ -77,9 +85,12 @@ include './include/links.php';
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
+          <div class="email-error-handler">
+
+          </div>
           <form>
             <div class="mb-3">
-              <p>Please fill below your Email to verify✔ </p>
+              <p class='text-dark'>Please fill below your Email to verify✔ </p>
             </div>
             <div class="mb-3">
               <input type="text" class="form-control emailVerification" placeholder="email" id="recipient-name">
@@ -99,22 +110,25 @@ include './include/links.php';
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Verification Model</h5>
+          <h5 class="modal-title" id="exampleModalLabel">Verification Code</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
+          <div class="verify-error-handler">
+
+          </div>
           <form>
             <div class="mb-3">
               <p>Enter the verification code that we sent you in your Email </p>
             </div>
             <div class="mb-3">
-              <input type="text" class="form-control verCode" placeholder="Verificatio Code" id="recipient-name">
+              <input type="number" class="form-control verCode" placeholder="Verificatio Code" id="recipient-name">
             </div>
           </form>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary code">save</button>
+          <button type="button" class="btn btn-primary code">Continue</button>
         </div>
       </div>
     </div>
@@ -128,6 +142,9 @@ include './include/links.php';
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
+          <div class="pass-error-handler">
+
+          </div>
           <form>
             <div class="mb-3">
               <input type="text" class="form-control newPassword" placeholder="new Password" id="recipient-name">
@@ -144,20 +161,31 @@ include './include/links.php';
       </div>
     </div>
   </div>
+  <div class="modal fade infoModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+
+        <div class="modal-body">
+          <div class="alert alert-primary info-body">
+            <strong class='info-message'>message</strong>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary continue">Continue to Update Your Password</button>
+        </div>
+      </div>
+    </div>
+  </div>
   <!--**********************************
         Scripts
     ***********************************-->
-  <!-- Required vendors -->
+
   <script src="./vendor/global/global.min.js"></script>
   <script src="./js/quixnav-init.js"></script>
   <script src="./js/custom.min.js"></script>
   <script src="./js/jquery-3.3.1.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
-    integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
-    crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
-    integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
-    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
 
   <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
   <script src="../iziToast-master/dist/js/iziToast.js"></script>
@@ -165,20 +193,40 @@ include './include/links.php';
   <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
   <script src='../js/jquery-3.3.1.min.js'></script>
 
+
+
   <script>
     $(document).ready(() => {
-      $(".login").click((e) => {
-        e.preventDefault();
-        if ($(".email").val() == "" || $(".password").val() == "") {
-          $(".error-handler").html(`
+      const clearVerifyCode = () => localStorage.clear();
+      clearVerifyCode();
+
+      function emailVerify(email) {
+        // Regular expression for validating an Email
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/;
+
+        // Test the email against the regular expression
+        return emailRegex.test(email);
+      }
+
+      function displayMessage(message) {
+        $(".error-handler").html(`
                 <div class="alert alert-danger">
-                      <strong class='text-dark'>Provide, Email And Password To continue 👇..</strong>
+                      <strong class='text-dark'>${message}</strong>
                     </div>
 
             `);
-          setTimeout(() => {
-            $(".error-handler").html("");
-          }, 3000);
+        setTimeout(() => {
+          $(".error-handler").html("");
+        }, 3000);
+      }
+
+
+      $(".login").click((e) => {
+        e.preventDefault();
+        if ($(".email").val() == "" || $(".password").val() == "") {
+          displayMessage("Provide, Email And Password To continue 👇..");
+        } else if (!emailVerify($(".email").val())) {
+          displayMessage("Incorrect Email Format");
         } else {
           $.ajax({
             method: "POST",
@@ -189,111 +237,232 @@ include './include/links.php';
               action: "validateAuth",
             },
             url: "./Api/auth.api.php",
+            beforeSend: () => {
+              $('.login').attr("disabled", true)
+            },
             success: (res) => {
-              const { isFound, data } = res;
+              $('.login').attr("disabled", false)
+              const {
+                isFound,
+                data
+              } = res;
               console.log(data)
               if (isFound) {
                 sessionStorage.setItem('username', data.name);
 
                 window.location.href = "./view/dashboard.php";
               } else {
-                $(".error-handler").html(`
-                <div class="alert alert-danger">
-                      <strong class='text-dark'>Incorrect Email or Password 💁‍♂️</strong>
-                    </div>
-
-            `);
-                setTimeout(() => {
-                  $(".error-handler").html("");
-                }, 3000);
+                displayMessage("Incorrect Email or Password ")
               }
             },
             error: (err) => {
+              $('.login').attr("disabled", false)
               console.log(err);
-              $(".error-handler").html(`
-                <div class="alert alert-danger">
-                      <strong class='text-dark'>Internal Server Error Occurred 😢</strong>
-                    </div>
-
-            `);
+              displayMessage(err.responseText)
             },
           });
         }
       });
-    });
-    $(".forget").click(function () {
-
-      $(".loginModal").modal('show');
-    });
-    $(".emailSend").click(function () {
-      email = $(".emailVerification").val();
-      $.ajax({
-        method: "POST",
-        dataType: "JSON",
-        data: { email: email, action: "emailVer", table: "admins" },
-        url: './Api/auth.api.php',
-        success: (res) => {
-          var { data, isExist, code, message, error } = res
-          if (isExist) {
-            localStorage.setItem("code", code)
-            // localStorage.setItem("table", $(".table select").val())
-
-            $(".loginModal").modal('hide'); $(".newPasswordModal").modal('show');
-          } else {
-            alert(error)
-          }
-          console.log(res);
 
 
-        },
-        error: (err) => {
-          console.log(err);
+      $(".forget").click(function() {
+        $(".loginModal").modal('show');
+      });
+      $(".continue").click(function() {
+        $(".newPasswordModal").modal('show');
+        $('.infoModal').modal("hide");
+      });
+      $(".emailSend").click(function(e) {
+        e.preventDefault()
+        email = $(".emailVerification").val();
+        if (email == "") {
+          $('.email-error-handler').html(`
+        <div class='alert alert-danger'>
+        <strong class='text-light'>Please Fill The Email field</strong>
+        </div>
+        
+        `)
+
+          setTimeout(() => {
+            $('.email-error-handler').html("")
+          }, 3000);
+
+          return;
         }
+        if (!emailVerify($(".emailVerification").val())) {
+          $('.email-error-handler').html(`
+        <div class='alert alert-danger'>
+        <strong class='text-light'>Incorrect Email format</strong>
+        </div>
+        
+        `)
+
+          setTimeout(() => {
+            $('.email-error-handler').html("")
+          }, 3000);
+
+          return;
+        }
+
+        $.ajax({
+          method: "POST",
+          dataType: "JSON",
+          data: {
+            email: email,
+            action: "emailVer",
+            table: "admins"
+          },
+          url: './Api/auth.api.php',
+          beforeSend: () => {
+            $(".emailSend").attr("disabled", true);
+            $(".emailSend").text("Processing...");
+          },
+          success: (res) => {
+            $(".emailSend").attr("disabled", false);
+            $(".emailSend").text("send");
+            var {
+              data,
+              isExist,
+              code,
+              message,
+              error
+            } = res
+            if (isExist) {
+              localStorage.setItem("code", code)
+              // localStorage.setItem("table", $(".table select").val())
+
+              $(".loginModal").modal('hide');
+              $('.info-body').html(`<strong>${message}</strong>`);
+              $('.infoModal').modal("show");
+            } else {
+              $('.email-error-handler').html(`
+        <div class='alert alert-danger'>
+        <strong class='text-light'>${email} Does not exist</strong>
+        </div>
+        
+        `)
+
+              setTimeout(() => {
+                $('.email-error-handler').html("")
+              }, 3000);
+
+              return;
+            }
+            console.log(res);
+
+
+          },
+          error: (err) => {
+            $(".emailSend").attr("disabled", false);
+            $(".emailSend").text("send");
+            console.log(err);
+          }
+        })
+      });
+
+
+      $(".code").click(function() {
+        if ($('.verCode').val() == "") {
+          $('.verify-error-handler').html(`
+                <div class='alert alert-danger'>
+                <strong class='text-light fw-bold'>Code is Required..</strong>
+                </div>
+                
+                `)
+
+          setTimeout(() => {
+            $('.verify-error-handler').html("");
+          }, 3000);
+          return;
+        }
+
+        if ($('.verCode').val() == localStorage.getItem("code")) {
+          $(".newPasswordModal").modal("hide");
+          $(".updateModal").modal('show');
+        } else {
+          $('.verify-error-handler').html(`
+                <div class='alert alert-danger'>
+                <strong class='text-light fw-bold'>Invalid Verification Code</strong>
+                </div>
+                
+                `)
+
+          setTimeout(() => {
+            $('.verify-error-handler').html("");
+          }, 3000);
+          return;
+
+        }
+      });
+
+      $(".updatePass").click((e) => {
+        e.preventDefault();
+        if ($(".newPassword").val() == "" || $(".confirmPassword").val() == "") {
+          $('.pass-error-handler').html(`
+                <div class='alert alert-danger'>
+                <strong class='text-light fw-bold'>All Fields Are required</strong>
+                </div>
+                
+                `)
+
+          setTimeout(() => {
+            $('.pass-error-handler').html("");
+          }, 3000);
+          return;
+        }
+        if ($(".newPassword").val() != $(".confirmPassword").val())
+
+        {
+          $('.pass-error-handler').html(`
+                <div class='alert alert-danger'>
+                <strong class='text-light fw-bold'>Confirm Password must be same as new password</strong>
+                </div>
+                
+                `)
+
+          setTimeout(() => {
+            $('.pass-error-handler').html("");
+          }, 3000);
+          return;
+
+        }
+        data = {
+          email: $(".emailVerification").val(),
+          password: $(".newPassword").val(),
+          action: "updateUser",
+          table: "admins"
+        };
+        $.ajax({
+          method: "POST",
+          dataType: "JSON",
+          data: data,
+          url: './Api/auth.api.php',
+          success: (res) => {
+            $('.pass-error-handler').html(`
+                <div class='alert alert-success'>
+                <strong>Your password has been changed</strong>
+                </div>
+                
+                `)
+
+            setTimeout(() => {
+              $('.pass-error-handler').html("");
+              localStorage.clear()
+              $(".updateModal").modal('hide');
+              $(".emailVerification").val("")
+              $(".newPassword").val("")
+              $(".confirmPassword").val("")
+              $('.verCode').val("")
+            }, 3000);
+          },
+          error: (err) => {
+            console.log(err);
+          }
+        })
       })
+
+
     });
-
-
-    $(".code").click(function () {
-      if ($('.verCode').val() == localStorage.getItem("code")) {
-        alert('same code');
-        $(".updateModal").modal('show');
-      }
-      else {
-        alert('wrong code');
-
-      }
-    });
-
-    $(".updatePass").click(() => {
-      if ($(".newPassword").val() != $(".confirmPassword").val())
-
-    {
-      alert("Confirm Password must be same as new password")
-      return;
-    }
-    data = {
-      email: $(".emailVerification").val(),
-      password: $(".newPassword").val(),
-      action: "updateUser",
-      table: "admins"
-    };
-    $.ajax({
-      method: "POST",
-      dataType: "JSON",
-      data: data,
-      url: './Api/auth.api.php',
-      success: (res) => {
-        console.log(res);
-        $(".updateModal").modal('hide');
-        window.location.href = "./login.php";
-        localStorage.clear()
-      },
-      error: (err) => {
-        console.log(err);
-      }
-    })
-    })
-
   </script>
 </body>
 

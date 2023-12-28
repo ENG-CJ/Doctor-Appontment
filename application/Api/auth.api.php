@@ -1,5 +1,5 @@
 <?php
-include_once '../include/session.php';
+// include_once '../include/session.php';
 include_once "../config/conn.db.php";
 include_once './delivery_email.php';
 
@@ -20,25 +20,19 @@ class Auth extends DatabaseConnection
             $result = $conn->query($sql);
             if ($result) {
                 if (mysqli_num_rows($result) > 0) {
-                    $sess_rows= $result->fetch_assoc();
-                    $_SESSION['type']=$sess_rows['type'];
-                    // $_SESSION['type']=$sess_rows['type'];
-                    while ($rows = $result->fetch_assoc()) {
-                        $data[] = $rows;
-                    }
-                    $res = array("message" => "success", "data" => $data, "isFound" => true);
-                } else  
+                    session_start();
+                    $row = $result->fetch_assoc();
+                 
+                    $_SESSION['type'] = $row['type'];
+                    $_SESSION['user_id'] = $row['admin_id'];
+                    $res = array("message" => "success", "data" => $row, "isFound" => true);
+                } else
                     $res = array("message" => "success", "isFound" => false);
-
-
             } else {
                 $res = array("error" => "there is an error");
             }
         }
         echo json_encode($res);
-
-
-
     }
     public function validateUser(mysqli $conn)
     {
@@ -46,7 +40,16 @@ class Auth extends DatabaseConnection
         extract($_POST);
         $res = array();
         $data = array();
-        $sql = "SELECT *FROM $table WHERE email='$email'";
+        if(strtolower($table)=="admins")
+           $sql = "SELECT *FROM $table WHERE email='$email' OR username='$username'";
+        else if(strtolower($table)=="hospitals")
+           $sql = "SELECT *FROM $table WHERE hos_email='$email' OR main_number='$mobile' OR hos_name='$username'";
+        else if(strtolower($table)=="proffision")
+           $sql = "SELECT *FROM $table WHERE pro_name='$username'";
+        else if(strtolower($table)=="diagnose")
+           $sql = "SELECT *FROM $table WHERE name='$username'";
+        else
+            $sql = "SELECT *FROM $table WHERE email='$email' OR mobile='$mobile'";
 
         if (!$conn)
             $res = array("error" => "there is an error in the connection");
@@ -59,19 +62,17 @@ class Auth extends DatabaseConnection
                         $data[] = $rows;
                     }
                     $res = array("message" => "success", "data" => $data, "isFound" => true);
-                } else  
+                } else
                     $res = array("message" => "success", "isFound" => false);
-
-
             } else {
                 $res = array("error" => "there is an error");
             }
         }
         echo json_encode($res);
-
-
-
     }
+
+
+    // when making login from different users with different tables
     public function loginType(mysqli $conn)
     {
 
@@ -86,24 +87,22 @@ class Auth extends DatabaseConnection
             $result = $conn->query($sql);
             if ($result) {
                 if (mysqli_num_rows($result) > 0) {
-                    while ($rows = $result->fetch_assoc()) {
-                        $data[] = $rows;
-                        $_SESSION['type'] = $rows["type"];
-                        $_SESSION['name'] = $rows["name"];
-                    }
+                    session_start();
+                    $row = $result->fetch_assoc();
+                    $_SESSION['type'] = $row['type'];
+                    if (strtolower($table) == "admins" || strtolower($table) == "admin")
+                        $_SESSION['name'] = $row["username"];
+                    else
+                        $_SESSION['name'] = $row["name"];
+
                     $res = array("message" => "success", "data" => $data, "isFound" => true);
                 } else
                     $res = array("message" => "success", "isFound" => false);
-
-
             } else {
                 $res = array("error" => "there is an error in the execution");
             }
         }
         echo json_encode($res);
-
-
-
     }
 
     public function login(mysqli $conn)
@@ -134,20 +133,18 @@ class Auth extends DatabaseConnection
                             $res = array("message" => "success", "data" => $data, "isFound" => true);
                             return;
                         }
-
                     } else
                         $res = array("message" => "success", "isFound" => false);
                 } else {
                     $res = array("error" => "this is an error");
                 }
-            }
-            ;
+            };
 
             echo json_encode($res);
-
         }
     }
 
+    // when making reset password
     public function emailVer(mysqli $conn)
     {
         extract($_POST);
@@ -162,29 +159,34 @@ class Auth extends DatabaseConnection
             $result = $conn->query($sql);
             if ($result) {
                 $rows = mysqli_num_rows($result);
-                if($rows>0)
-                  {
+                if ($rows > 0) {
+                    $row = $result->fetch_assoc();
+                    $name = '';
+                    if (strtolower($table) == "doctors" || strtolower($table) == "doctor")
+                        $name = $row['name'];
+                    else if (strtolower($table) == "patients" || strtolower($table) == "patient")
+                        $name = $row['name'];
+                    else
+                        $name = $row['username'];
+
                     $mail = new Mail();
-                    $mail->setFullName('Dear User');
+                    $mail->setFullName($name);
                     $mail->setReceiverEmail($email);
-                    $mail->setMessageContent("<h2>Verification Code</h2> Your Verification Code is : $code");
+                    $mail->setMessageContent("<h1>Hello " . $name . "</h1> <hr/><h2>Verification Code</h2>The verification code you received is a one-time-use code. Once it has been utilized, it cannot be used again. Your unique verification code is: <h1>$code</h1>");
                     $sent = $mail->sendEmail();
                     if ($sent) {
-                        $response = array("code"=> $code,"message"=> "Check your email, the verification code was sent $email","error" => "", "isExist" => true,"data"=> $result->fetch_assoc());
-                      
+                        $response = array("code" => $code, "message" => "Check your email, the verification code was sent $email", "error" => "", "isExist" => true, "data" => $row);
                     } else {
                         $response = array("message" => "doesnot sent email");
                     }
-                   
-                  }
-                else
-                $response = array("error" => "invalid Email", "isExist" => false,"data"=> "");
+                } else
+                    $response = array("error" => "invalid Email", "isExist" => false, "data" => "");
             } else {
                 $response = array("error" => "there is an error connection", "status" => false);
             }
         }
-      
-      
+
+
         echo json_encode($response);
     }
 
@@ -205,13 +207,6 @@ class Auth extends DatabaseConnection
         }
         echo json_encode($response);
     }
-
-
-
-
-
-
-
 }
 
 
@@ -222,7 +217,3 @@ if (isset($action)) {
     $auth = new Auth();
     $auth->$action(Auth::getConnection());
 }
-
-
-
-?>

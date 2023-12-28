@@ -1,0 +1,3 @@
+Options -Indexes
+ErrorDocument 403 /Doctor-Appontment/application/errors/403.html
+ErrorDocument 404 /Doctor-Appontment/application/errors/404.html

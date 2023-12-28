@@ -1,4 +1,5 @@
 <?php
+include_once "../include/session.php";
 include '../include/links.php';
 include '../include/header.php';
 include '../include/sidebar.php';
@@ -8,26 +9,27 @@ include '../include/sidebar.php';
             Content body start
         ***********************************-->
 <div class="content-body">
+
     <div class="container-fluid">
         <div class="row page-titles mx-0">
-            <!-- <div class="col-sm-6 p-md-0">
-                <div class="welcome-text">
-
-                </div>
-            </div> -->
-
 
         </div>
         <!-- row -->
         <div class="message-handler">
 
         </div>
+
         <h6>Create or Setup New Schedule </h6>
         <p class='text-muted'>This Schedule Will Be Available On Public </p>
         <div class="row">
             <div class="col-xl-12">
                 <div class="card">
-
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        <strong>NOTE- </strong>It is not possible to create a schedule with the same date for a specific doctor. Each doctor can only have one schedule on any given date.
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
                     <div class="card-block table-border-style p-3">
                         <div class="row">
                             <div class="col-6">
@@ -109,7 +111,7 @@ include '../include/footer.php';
                 url: "../Api/schedule.api.php",
                 data: {
                     action: "validateSchedule",
-                    dr: 4,
+                    dr: $('.doctors').val(),
                     date: date
                 },
                 success: (res) => {
@@ -124,6 +126,15 @@ include '../include/footer.php';
         }
         $('.back').click(() => window.location.href = "./schedule.php")
         $(".create").click(() => {
+
+            if ($(".doctors").val() == "" || $(".date").val() == "" || $(".from_time").val() == "" || $('.to_time').val() == "" ||
+                $(".duration").val() == "" || $('.price').val() == "" || $(".range").val() == "") {
+                displayToast("All fields are required.", "error", 4000)
+                return;
+            }
+
+
+
             if (parseInt($('.duration').val()) > 90 || parseInt($('.duration').val()) < 10) {
                 displayToast("duration must be anywhere between 10 and 90 minutes.", "error", 4000)
                 return;

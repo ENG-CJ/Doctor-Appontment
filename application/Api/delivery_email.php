@@ -97,21 +97,20 @@ class Mail
 
         try {
 
-                $phpMail = new PHPMailer();
-                $phpMail->isSendMail();
-                // $phpMail->isSMTP();
+                $phpMail = new PHPMailer();     
+                $phpMail->isSMTP();
                 $phpMail->Mailer = "smtp";
-                $phpMail->SMTPAuth = false;
-                $phpMail->SMTPDebug = false;
+                $phpMail->SMTPAuth = true;
+                $phpMail->SMTPDebug = 0;
                 $phpMail->SMTPSecure = "tls";
                 $phpMail->Port=587;
                 $phpMail->Host = "smtp.gmail.com";
-                $phpMail->Username = "mohamednorboorow@gmail.com";
-                $phpMail->Password = "qkvrzpziyhgnfysv";
+                $phpMail->Username = "nmailer35@gmail.com";
+                $phpMail->Password = "avlcrgudztfqxnsd";
 
                 // email
-                $phpMail->Subject = "Doctor apointment System";
-                $phpMail->setFrom("mohamednorboorow@gmail.com", "Doctor apointment");
+                $phpMail->Subject = "DOCTOR APPOINTMENT SYSTEM";
+                $phpMail->setFrom("nmailer35@gmail.com", "Sahal Doctor Appointment");
                 $phpMail->addAddress($this->receiverEmail, $this->fullName);
 
                 $phpMail->isHTML();

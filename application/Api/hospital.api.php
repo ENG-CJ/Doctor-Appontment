@@ -70,7 +70,7 @@ public function updateHospital(mysqli $conn)
     {
      extract($_POST);
      $response=array();
-     $sql="UPDATE `hospitals` SET `name`='$name',`main_number`='$number',`email`='$email',`location`='$location',`description`='$description' where hospital_id='$id'";
+     $sql="UPDATE `hospitals` SET `hos_name`='$name',`main_number`='$number',`hos_email`='$email',`location`='$location',`description`='$description' where hospital_id='$id'";
      if(!$conn)
      {
        $response=array("error"=>"there is an error connction","status"=>false);
@@ -92,7 +92,7 @@ public function createHospital(mysqli $conn)
     {
         extract($_POST);
         $response=array();
-        $sql="INSERT INTO `hospitals`(`name`, `main_number`, `email`, `location`, `description`) VALUES ('$name','$number','$email','$location','$description')";
+        $sql="INSERT INTO `hospitals`(`hos_name`, `main_number`, `hos_email`, `location`, `description`) VALUES ('$name','$number','$email','$location','$description')";
         if(!$conn){
             $response=array("error"=>"there is an error connection","status"=>false);
         }
@@ -102,9 +102,9 @@ public function createHospital(mysqli $conn)
                 if ($res)
                     $response = array("error" => "", "status" => true, "message" => "created");
                 else
-                    $response = array("error" => "there is an error connection", "status" => false);
+                    $response = array("error" => "there is internal server error, please try again", "status" => false);
            }catch(Exception $e){
-                $response = array("error" => "there is an error connection", "status" => false);
+                $response = array("error" => "there is internal server error, please try again", "status" => false);
            }
         
         }

@@ -1,5 +1,6 @@
 <?php
 include_once '../config/conn.db.php';
+include_once './delivery_email.php';
 // header ("Content-type: application/json");
 $action = $_POST['action'];
 
@@ -68,6 +69,24 @@ WHERE appointment.pat_id=14";
         $response = array();
         $data = array();
         $sql = "SELECT *FROM appointment where appo_id='$id'";
+        if (!$conn)
+            $response = array("error" => "error from database", "status" => false);
+        else {
+            $result = $conn->query($sql);
+            if ($result) {
+                while ($rows = $result->fetch_assoc())
+                    $data[] = $rows;
+                $response = array("status" => true, "data" => $data);
+            }
+        }
+        echo json_encode($response);
+    }
+    public function fetchReminderData($conn)
+    {
+        extract($_POST);
+        $response = array();
+        $data = array();
+        $sql = "SELECT *FROM reminder where id='$id'";
         if (!$conn)
             $response = array("error" => "error from database", "status" => false);
         else {
@@ -197,6 +216,8 @@ WHERE appointment.dr_id=4 AND status='inprogress';";
     }
     public function loadAppointmentsForDoctor($conn)
     {
+        session_start();
+        $id = $_SESSION['USER_ID'];
         extract($_POST);
         $response = array();
         $data = array();
@@ -205,7 +226,33 @@ JOIN patients
 ON appointment.pat_id=patients.pat_id
 JOIN diagnose
 ON appointment.diagnose_id=diagnose.diganose_id
-WHERE appointment.dr_id=4;";
+WHERE appointment.dr_id='$id';";
+        if (!$conn)
+            $response = array("error" => "error from database", "status" => false);
+        else {
+            $result = $conn->query($sql);
+            if ($result) {
+                while ($rows = $result->fetch_assoc())
+                    $data[] = $rows;
+                $response = array("status" => true, "data" => $data);
+            }
+        }
+        echo json_encode($response);
+    }
+    public function loadAppointmentsForAdmin($conn)
+    {
+        // session_start();
+        // $id = $_SESSION['USER_ID'];
+        extract($_POST);
+        $response = array();
+        $data = array();
+        $sql = "SELECT reminder,appo_id,appo_date,status,created_at,diagnose.diganose_id,diagnose.name as diagnose,diagnose.description, patients.pat_id,patients.name as patient,patients.gender,patients.mobile, doctors.name as doctor,doctors.profile_image FROM appointment
+JOIN patients
+ON appointment.pat_id=patients.pat_id
+JOIN diagnose
+ON appointment.diagnose_id=diagnose.diganose_id
+JOIN doctors
+ON appointment.dr_id=doctors.dr_id;";
         if (!$conn)
             $response = array("error" => "error from database", "status" => false);
         else {
@@ -224,7 +271,7 @@ WHERE appointment.dr_id=4;";
         $response = array();
         $data = array();
         $sql = "SELECT appointment.appo_id,appointment.appo_date,appointment.diagnose_id,
-appointment.dr_id,appointment.symptom_description FROM appointment
+appointment.dr_id,appointment.symptom_description, appointment.pat_id,appointment.reminder FROM appointment
 WHERE appointment.appo_id='$id'";
         if (!$conn)
             $response = array("error" => "error from database", "status" => false);
@@ -234,6 +281,261 @@ WHERE appointment.appo_id='$id'";
                 while ($rows = $result->fetch_assoc())
                     $data[] = $rows;
                 $response = array("status" => true, "data" => $data);
+            }
+        }
+        echo json_encode($response);
+    }
+    public function configureReminder($conn)
+    {
+        extract($_POST);
+        $response = array();
+        $data = array();
+        $sql = "INSERT INTO `reminder`(`user`, `appo_id`, `title`, `isRead`, `message`) 
+        VALUES ('$user_id','$appo_id','$title','false','$message')";
+        if (!$conn)
+            $response = array("error" => "error from database", "status" => false);
+        else {
+            $result = $conn->query($sql);
+            if ($result) {
+
+                $response = array("status" => true, "message" => "configured");
+            }
+        }
+        echo json_encode($response);
+    }
+    public function updateReminder($conn)
+    {
+        extract($_POST);
+        $response = array();
+        $data = array();
+        $sql = "UPDATE `reminder` SET `user`='$user_id', `appo_id`='$appo_id', `title`='$title', `message`='$message'";
+        if (!$conn)
+            $response = array("error" => "error from database", "status" => false);
+        else {
+            $result = $conn->query($sql);
+            if ($result) {
+
+                $response = array("status" => true, "message" => "configured");
+            }
+        }
+        echo json_encode($response);
+    }
+    public function findReminderData($conn)
+    {
+        extract($_POST);
+        $response = array();
+        $data = array();
+        $sql = "SELECT *From reminder where user='$user_id' and appo_id='$appo_id'";
+        if (!$conn)
+            $response = array("error" => "error from database", "status" => false);
+        else {
+            $result = $conn->query($sql);
+            if ($result) {
+                while ($rows = $result->fetch_assoc())
+                    $data[] = $rows;
+                if (count($data) > 0)
+
+                    $response = array("status" => true, "hasData" => true);
+                else
+                    $response = array("status" => true, "hasData" => false);
+            }
+        }
+        echo json_encode($response);
+    }
+    public function getReminderData($conn)
+    {
+        extract($_POST);
+        $response = array();
+        $data = array();
+        $sql = "SELECT *From reminder where user=28 and isRead='false'";
+        if (!$conn)
+            $response = array("error" => "error from database", "status" => false);
+        else {
+            $result = $conn->query($sql);
+            if ($result) {
+                while ($rows = $result->fetch_assoc())
+                    $data[] = $rows;
+                if (count($data) > 0)
+
+                    $response = array("status" => true, "hasData" => true);
+                else
+                    $response = array("status" => true, "hasData" => false);
+            }
+        }
+        echo json_encode($response);
+    }
+    public function getRemindersAsList($conn)
+    {
+        extract($_POST);
+        $response = array();
+        $data = array();
+        $sql = "SELECT *From reminder where user=28 and isRead='false'";
+        if (!$conn)
+            $response = array("error" => "error from database", "status" => false);
+        else {
+            $result = $conn->query($sql);
+            if ($result) {
+                while ($rows = $result->fetch_assoc())
+                    $data[] = $rows;
+                if (count($data) > 0)
+
+                    $response = array("status" => true, "hasData" => true, "data" => $data);
+                else
+                    $response = array("status" => true, "hasData" => false);
+            }
+        }
+        echo json_encode($response);
+    }
+    public function readReminders($conn)
+    {
+        extract($_POST);
+        $response = array();
+        $data = array();
+        $sql = "SELECT * From reminder
+JOIN patients
+ON reminder.user=patients.pat_id";
+        if (!$conn)
+            $response = array("error" => "error from database", "status" => false);
+        else {
+            $result = $conn->query($sql);
+            if ($result) {
+                while ($rows = $result->fetch_assoc())
+                    $data[] = $rows;
+                if (count($data) > 0)
+
+                    $response = array("status" => true, "hasData" => true, "data" => $data);
+                else
+                    $response = array("status" => true, "hasData" => false);
+            }
+        }
+        echo json_encode($response);
+    }
+    public function readReviewsForAdmin($conn)
+    {
+        extract($_POST);
+        $response = array();
+        $data = array();
+        $sql = "SELECT proffision.pro_name,reviews.id,reviews.description,doctors.name as drName,doctors.profile_image,doctors.email,doctors.dr_id
+FROM reviews
+JOIN doctors
+ON reviews.dr_id=doctors.dr_id
+JOIN proffision
+ON doctors.profision_id=proffision.pro_id
+";
+        if (!$conn)
+            $response = array("error" => "error from database", "status" => false);
+        else {
+            $result = $conn->query($sql);
+            if ($result) {
+                while ($rows = $result->fetch_assoc())
+                    $data[] = $rows;
+                if (count($data) > 0)
+
+                    $response = array("status" => true, "hasData" => true, "data" => $data);
+                else
+                    $response = array("status" => true, "hasData" => false);
+            }
+        }
+        echo json_encode($response);
+    }
+    public function sendEmailPatch($conn)
+    {
+        extract($_POST);
+        $response = array();
+        $data = array();
+        $data = Appointment::getUserEmail($user_id, Appointment::getConnection());
+        if (count($data) > 0) {
+            $mail = new Mail();
+            $mail->setFullName($data['name']);
+            $mail->setReceiverEmail($data['email']);
+            $mail->setMessageContent("<h2>Hi, " . $data['name'] . "</h2> $message.");
+
+            if ($mail->sendEmail()) {
+                $response = array("error" => "", "message" => "Email has been sent");
+            } else
+                $response = array("error" => "Failed to send email", "message" => "Email has been sent");
+        } else
+            $response = array("error" => "This user does not exist, please try again letter", "message" => "Email has been sent");
+
+        echo json_encode($response);
+    }
+    public function sendEmail($conn)
+    {
+        extract($_POST);
+        $response = array();
+     
+       
+            $mail = new Mail();
+            $mail->setFullName($drName);
+            $mail->setReceiverEmail($email);
+            $mail->setMessageContent("<h2>Hi, Dr. $drName </h2> $message.");
+
+            if ($mail->sendEmail()) {
+                $response = array("error" => "", "message" => "Email has been sent");
+            } else
+                $response = array("error" => "Failed to send email", "message" => "Email has been sent");
+      
+
+        echo json_encode($response);
+    }
+    private static function getUserEmail($id, $conn): array
+    {
+        $userData = [];
+
+        extract($_POST);
+        $sql = "SELECT email,name From patients
+where pat_id='$id'";
+        if (!$conn)
+            $response = array("error" => "error from database", "status" => false);
+        else {
+            $result = $conn->query($sql);
+            if ($result) {
+                $row = $result->fetch_assoc();
+                $userData = ["email" => $row['email'], "name" => $row['name']];
+            }
+        }
+        return $userData;
+    }
+    public function readSelections($conn)
+    {
+        extract($_POST);
+        $response = array();
+        $data = array();
+        if ($from == "appointment")
+            $sql = "SELECT appo_id,appo_date From appointment where status='Pending'";
+        else
+            $sql = "SELECT pat_id,name From patients";
+
+        if (!$conn)
+            $response = array("error" => "error from database", "status" => false);
+        else {
+            $result = $conn->query($sql);
+            if ($result) {
+                while ($rows = $result->fetch_assoc())
+                    $data[] = $rows;
+                if (count($data) > 0)
+
+                    $response = array("status" => true, "hasData" => true, "data" => $data);
+                else
+                    $response = array("status" => true, "hasData" => false);
+            }
+        }
+        echo json_encode($response);
+    }
+    public function updateReminderData($conn)
+    {
+        extract($_POST);
+        $response = array();
+        $data = array();
+        $sql = "UPDATE reminder SET isRead='true' where user=28";
+        if (!$conn)
+            $response = array("error" => "error from database", "status" => false);
+        else {
+            $result = $conn->query($sql);
+            if ($result) {
+
+
+                $response = array("status" => true, "message" => "success");
             }
         }
         echo json_encode($response);
@@ -261,7 +563,7 @@ WHERE appointment.appo_id='$id'";
         extract($_POST);
         $response = array();
 
-        $sql = "INSERT INTO `appointment`(`appo_date`, `diagnose_id`, `symptom_description`, `dr_id`, `pat_id`) VALUES('$appointment_date','$diagnose','$description','$dr_id','$pat_id')";
+        $sql = "INSERT INTO `appointment`(`appo_date`, `diagnose_id`, `symptom_description`, `dr_id`, `pat_id`,`status`,`reminder`) VALUES('$appointment_date','$diagnose','$description','$dr_id','$pat_id','Pending','$reminder')";
         if (!$conn) {
             $response = array("error" => "there is an error connection", "status" => false);
         } else {
@@ -280,7 +582,7 @@ WHERE appointment.appo_id='$id'";
         extract($_POST);
         $response = array();
 
-        $sql = "UPDATE `appointment` SET `appo_date`='$date',`diagnose_id`='$diagnose',`symptom_description`='$description',`dr_id`='$dr' WHERE appo_id='$id'";
+        $sql = "UPDATE `appointment` SET `reminder`='$reminder', `appo_date`='$date',`diagnose_id`='$diagnose',`symptom_description`='$description',`dr_id`='$dr', `pat_id`='$pat_id' WHERE appo_id='$id'";
         if (!$conn) {
             $response = array("error" => "there is an error connection", "status" => false);
         } else {
@@ -332,6 +634,25 @@ WHERE appointment.appo_id='$id'";
 
         echo json_encode($response);
     }
+    public function deleteReminder($conn)
+    {
+        extract($_POST);
+        $response = array();
+
+        $sql = "DELETE FROM reminder WHERE id='$id'";
+        if (!$conn) {
+            $response = array("error" => "there is an error connection", "status" => false);
+        } else {
+            $result = $conn->query($sql);
+            if ($result) {
+                $response = array("message" => "appointment has been removed...", "status" => true);
+            } else {
+                $response = array("error" => " error connection", "Status" => false);
+            }
+        }
+
+        echo json_encode($response);
+    }
 
     public function fetchOne($conn)
     {
@@ -361,4 +682,5 @@ $doctors = new Appointment;
 
 if ($action) {
     $doctors->$action(Appointment::getConnection());
-} else echo "action is required";
+} else
+    echo "action is required";

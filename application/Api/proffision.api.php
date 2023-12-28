@@ -33,14 +33,15 @@ class Proffision extends DatabaseConnection
         $res = array();
         $data = array();
        
-        $sql = "SELECT hospitals.hospital_id as hos_id, doctors.dr_id as drID, 
-        hospitals.name as hosName, doctors.name as drName, doctors.mobile, doctors.profile_image, 
-        proffision.name as pro_name, proffision.pro_id FROM doctors
-        INNER JOIN hospitals
-        ON doctors.hospital_id=hospitals.hospital_id
-        JOIN proffision
-        on doctors.profision_id=proffision.pro_id
-        WHERE doctors.verified='YES' and proffision.name='$pro'";
+        $sql = "SELECT hospitals.hospital_id as hos_id, doctors.dr_id as drID,
+            hospitals.hos_name as hosName, doctors.name as drName, doctors.mobile, doctors.profile_image, 
+            proffision.pro_name as pro_name, proffision.pro_id FROM doctors
+                        INNER JOIN hospitals
+                        ON doctors.hospital_id=hospitals.hospital_id
+                        JOIN proffision
+                        on doctors.profision_id=proffision.pro_id
+                       
+                        WHERE doctors.verified='YES' and proffision.pro_name='$pro'";
         if (!$conn)
             $res = array("error" => "there is an error");
         else {
@@ -87,7 +88,7 @@ class Proffision extends DatabaseConnection
         extract($_POST);
         $response = array();
 
-        $sql = "INSERT into proffision(`name`,`description`) VALUES ('$name','$decription')";
+        $sql = "INSERT into proffision(`pro_name`,`description`) VALUES ('$name','$decription')";
         if (!$conn)
             $response = array("error" => "There is an error connection ", "status" => false);
         else {

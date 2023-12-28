@@ -24,19 +24,22 @@
                                     <h4 class="text-center mb-4">Ragister an account</h4>
                                     <form >
                                         <div class="text-center">
-                                            <button type="submit" class="btn btn-primary btn-block patient">Ragister as
-                                                apetient</button>
+                                            <button type="submit" class="btn btn-primary btn-block patient">Register as
+                                                patient</button>
                                                 <!-- <button class="btn btn-primary patient">patient</button> -->
                                         </div><br>
 
                                         <div class="text-center">
-                                            <button type="submit" class="btn btn-primary btn-block Doctor">Ragister as
+                                            <button type="submit" class="btn btn-primary btn-block Doctor">Register as
                                                 Doctor</button>
                                         </div>
                                     </form>
+                                    <div class="my-2">
+                                        <p>Please, Select The Profile Type.</p>
+                                    </div>
                                     <div class="new-account mt-3">
                                         <p>if you have an account? <a class="text-primary"
-                                                href="./page-register.html">Sign in</a></p>
+                                                href="../">Sign in</a></p>
                                     </div>
                                 </div>
                             </div>

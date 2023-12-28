@@ -25,6 +25,25 @@ class Patient extends DatabaseConnection
                 }    
             echo json_encode($response);
         }
+    public function readPatientsData($conn)
+        {
+            $response=array();
+            $data=array();
+            $sql="select * from patients";
+            if(!$conn)
+                $response=array("error"=>"error from database","status"=>false);
+            else{
+                $result=$conn->query($sql);
+                if($result)
+                    {
+                        while($rows=$result->fetch_assoc()){
+                            $data[]=$rows;
+                        }
+                        $response=array("status"=>true,"data"=>$data);
+                    }   
+                }    
+            echo json_encode($response);
+        }
     public function deletePatient($conn)
         {
         extract($_POST);

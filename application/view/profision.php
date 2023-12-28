@@ -1,4 +1,5 @@
 <?php
+include_once '../include/session.php';
 include '../include/links.php';
 include '../include/header.php';
 include '../include/sidebar.php';
@@ -113,6 +114,7 @@ include '../include/footer.php';
 <script src="../iziToast-master/dist/js/iziToast.js"></script>
 <script src="../iziToast-master/dist/js/iziToast.min.js"></script>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script src="../js/validations.js"></script>
 <script>
     $(document).ready(() => {
         $(".add").click(() => {
@@ -128,68 +130,96 @@ include '../include/footer.php';
         });
 
         $(".save").click(() => {
-            if($(".name").val()==""){
-                displayToast("all fields are required", "error", 2000);
-                    }                  
-                    else{
-                        if ($(".save").text() == "save") {
-                var data = {
-                    name: $(".name").val(),
-                    decription: $(".decription").val(),
-                    action: "createProffision"
-                }
-
-                $.ajax({
-                    method: "POST",
-                    dataType: "JSON",
-                    url: "../Api/proffision.api.php",
-                    data: data,
-                    success: (res) => {
-                        console.log(res)
-                        $(".proffisionModal").modal("hide")
-                        readProffision();
-                        $(".table").DataTable();
-                        displayToast("The Data has been added..👋", "success", 2000)
-
-                    },
-                    error: (res) => {
-                        console.log(res)
-                        displayToast("Internal Server error occurred 😢", "error", 2000)
-                    }
-                })
-
+            if ($(".name").val() == "") {
+                displayToast("Profession name is required", "error", 2000);
             } else {
-                var data = {
-                    name: $(".name").val(),
-                    decription: $(".decription").val(),
+                if ($(".save").text() == "save") {
+                    var data = {
+                        name: $(".name").val(),
+                        decription: $(".decription").val(),
+                        action: "createProffision"
+                    }
+                    if (!containsOnlyAlphabeticAndSpaces($(".name").val())) {
+                        displayToast("Profession name must be any valid name, but cannot contains digits and other special characeters", "error", 2000);
+                        return;
+                    }
 
-                    id: $(".id").val(),
-                    action: "updateProffision",
+                    adminCheck("", "", "proffision", $(".name").val(), res => {
+                        if (res) {
+                            displayToast("This name already exists", "error", 2000);
+                            return;
+                        }
 
+
+                        $.ajax({
+                            method: "POST",
+                            dataType: "JSON",
+                            url: "../Api/proffision.api.php",
+                            data: data,
+                            success: (res) => {
+                                if (!res.status) {
+                                    displayToast("Error Occurred during creation", "error", 4000);
+                                    return;
+                                }
+                                console.log(res)
+                                $(".proffisionModal").modal("hide")
+                                readProffision();
+                                $(".table").DataTable();
+                                displayToast("The Data has been added..👋", "success", 2000)
+
+                            },
+                            error: (res) => {
+                                console.log(res)
+                                displayToast("Internal Server error occurred 😢", "error", 2000)
+                            }
+                        })
+                    })
+
+
+
+
+                } else {
+                    var data = {
+                        name: $(".name").val(),
+                        decription: $(".decription").val(),
+
+                        id: $(".id").val(),
+                        action: "updateProffision",
+
+                    }
+                    if ($(".name").val() == "") {
+                        displayToast("Profession name is required", "error", 2000);
+                        return;
+                    }
+                    if (!containsOnlyAlphabeticAndSpaces($(".name").val())) {
+                        displayToast("Profession name must be any valid name, but cannot contains digits and other special characeters", "error", 4000);
+                        return;
+                    }
+                    $.ajax({
+                        method: "POST",
+                        dataType: "JSON",
+                        url: "../Api/proffision.api.php",
+                        data: data,
+                        success: (res) => {
+                            console.log(res)
+                            if (!res.status) {
+                                displayToast("Error Occurred during updating", "error", 4000);
+                                return;
+                            }
+                            $(".proffisionModal").modal("hide")
+                            readProffision();
+                            $(".table").DataTable();
+                            displayToast("The Data has been updated..👋", "success", 2000)
+                        },
+                        error: (res) => {
+                            console.log(res)
+                            displayToast("Internal Server error occurred 😢", "error", 2000)
+                        }
+                    })
                 }
-                console.log(data);
 
-                $.ajax({
-                    method: "POST",
-                    dataType: "JSON",
-                    url: "../Api/proffision.api.php",
-                    data: data,
-                    success: (res) => {
-                        console.log(res)
-                        $(".proffisionModal").modal("hide")
-                        readProffision();
-                        $(".table").DataTable();
-                        displayToast("The Data has been updated..👋", "success", 2000)
-                    },
-                    error: (res) => {
-                        console.log(res)
-                        displayToast("Internal Server error occurred 😢", "error", 2000)
-                    }
-                })
+
             }
-
-
-                    }
         })
 
 
@@ -211,7 +241,7 @@ include '../include/footer.php';
                     } = res;
                     data.forEach(value => {
                         tr += `<td>${value.pro_id}</td>`
-                        tr += `<td>${value.name}</td>`
+                        tr += `<td>${value.pro_name}</td>`
                         tr += `<td>${value.description}</td>`
                         tr += `<td><a class='btn btn-success editButton' editID=${value.pro_id}>Edit</a>
                       <a class='btn btn-danger deleteProffision' delID=${value.pro_id}>Delete</a></td>`
@@ -239,7 +269,7 @@ include '../include/footer.php';
                 url: "../Api/proffision.api.php",
                 success: (res) => {
                     console.log(res)
-                    $('.name').val(res.data[0].name)
+                    $('.name').val(res.data[0].pro_name)
                     $('.decription').val(res.data[0].description)
                     $('.id').val(res.data[0].pro_id)
                     $('.save').text("Edit")
@@ -277,6 +307,7 @@ include '../include/footer.php';
                             },
                             url: "../Api/proffision.api.php",
                             success: (res) => {
+
                                 swal("Data Has Been removed!", {
                                     icon: "success",
                                 });
@@ -285,6 +316,7 @@ include '../include/footer.php';
                                 console.log(res)
                             },
                             error: (res) => {
+                                displayToast("Error Occurred during deletion process", "error", 4000);
                                 console.log(res)
                             }
 

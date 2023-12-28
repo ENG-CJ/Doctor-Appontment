@@ -1,5 +1,4 @@
 <?php
-
 include_once("../config/conn.db.php");
 
 
@@ -35,8 +34,10 @@ class Admin extends DatabaseConnection
         extract($_POST);
         $response = array();
         $data = array();
+        session_start();
+        $id = $_SESSION['user_id'];
 
-        $sql = "SELECT *FROM admins";
+        $sql = "SELECT *FROM admins where admin_id!='$id'";
         if (!$_conn)
             $response = array("error" => "There is an error connection ", "status" => false);
         else {

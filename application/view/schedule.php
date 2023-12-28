@@ -1,4 +1,5 @@
 <?php
+include_once "../include/session.php";
 include '../include/links.php';
 include '../include/header.php';
 include '../include/sidebar.php';
@@ -63,7 +64,7 @@ include '../include/sidebar.php';
 
 
 <div class="modal fade editScheduleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h6 class="modal-title" id="exampleModalLabel">Edit Schedule</h6>
@@ -72,19 +73,25 @@ include '../include/sidebar.php';
             <div class="modal-body">
                 <form>
                     <div class="mb-3">
+                        <label for="">Doctor</label>
+                        <select name="" id="" class="form-control doctors">
+                            <option value="">Select Doctor</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
                         <label for="recipient-name" class="col-form-label ">Date</label>
                         <input type="date" class="form-control date" id="recipient-name">
                     </div>
-                      <div class="mb-3">
+                    <div class="mb-3">
                         <label for="">duration</label>
                         <input type="number" class="form-control duration" placeholder="00:00:00" id="recipient-name">
 
-                      </div>
-                      <div class="mb-3">
+                    </div>
+                    <div class="mb-3">
                         <label for="">card price</label>
                         <input type="number" class="form-control price" placeholder="$0" id="recipient-name">
 
-                      </div>
+                    </div>
                     <div class="mb-3">
                         <label for="message-text" class="col-form-label">From Time</label>
                         <input type="time" class="form-control from_time" placeholder="61xxxxxxxxx" id="recipient-name">
@@ -129,7 +136,8 @@ include '../include/footer.php';
 <script src="../iziToast-master/dist/js/iziToast.js"></script>
 <script src="../iziToast-master/dist/js/iziToast.min.js"></script>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-
+<script src='../js/validations.js'></script>
+<script src='../js/utils.js'></script>
 <script>
     $(document).ready(function() {
         $(".add").click(() => window.location.href = "./setup_schedule.php");
@@ -154,6 +162,30 @@ include '../include/footer.php';
             })
         }
 
+        function loadDoctors() {
+            $.ajax({
+                method: "POST",
+                dataType: "JSON",
+                url: "../Api/schedule.api.php",
+                data: {
+                    action: "loadDoctors",
+                },
+                success: (res) => {
+                    console.log(res)
+
+                    var htmlOptions = "<option value=''>Select Doctor</option>"
+                    res.data.forEach(value => {
+                        htmlOptions += `<option value='${value.dr_id}'>${value.name}</option>`
+                    })
+                    $(".doctors").html(htmlOptions)
+                },
+                error: (res) => {
+                    console.log(res)
+                    // displayToast("Internal Server Error Ocurred 🤷‍♂😢️", "error", 2000);
+                }
+            })
+        }
+        loadDoctors()
 
         function loadSchedule() {
             $.ajax({
@@ -207,34 +239,63 @@ include '../include/footer.php';
                 $(".to_time").val(convertTimeTo24Hour(res.data[0].to_time));
                 $(".duration").val(res.data[0].duration);
                 $(".price").val(res.data[0].card_price);
+                $(".doctors").val(res.data[0].dr_id);
                 $('.editScheduleModal').modal("show");
             })
 
         })
         $(document).on("click", ".edit", function() {
-            data={
-                id:$(".id").val(),
-                range:$(".range").val(),
-                date:$(".date").val(),
-                from_time:$(".from_time").val(),
-                to_time:$(".to_time").val(),
-                duration:$(".duration").val(),
-                price:$(".price").val(),
-                action:"updateAllSchedule"
+            if ($(".doctors").val() == "" || $(".date").val() == "" || $(".from_time").val() == "" || $('.to_time').val() == "" ||
+                $(".duration").val() == "" || $('.price').val() == "" || $(".range").val() == "") {
+                displayToast("All fields are required.", "error", 4000)
+                return;
             }
-        $.ajax({
-            method: "POST",
-            dataType: "JSON",
-            url: "../Api/schedule.api.php",
-            data:data,
-            success:(res)=>{
-                console.log(res);
-            },
-            error:(error)=>{
-                console.log(error);
+
+
+
+            if (parseInt($('.duration').val()) > 90 || parseInt($('.duration').val()) < 10) {
+                displayToast("duration must be anywhere between 10 and 90 minutes.", "error", 4000)
+                return;
             }
-        })
-     
+            if (parseInt($('.price').val()) > 50 || parseInt($('.price').val()) < 0) {
+                displayToast("price must be vary between $0 and $50.", "error", 4000)
+                return;
+            }
+
+
+            data = {
+                id: $(".id").val(),
+                range: $(".range").val(),
+                date: $(".date").val(),
+                from_time: formatTime($(".from_time").val()),
+                to_time: formatTime($(".to_time").val()),
+                duration: $(".duration").val(),
+                price: $(".price").val(),
+                dr_id: $(".doctors").val(),
+                action: "updateAllSchedule"
+            }
+            $.ajax({
+                method: "POST",
+                dataType: "JSON",
+                url: "../Api/schedule.api.php",
+                data: data,
+                success: (res) => {
+                    $('.editScheduleModal').modal("hide");
+                    console.log(res);
+                    swal("Schedule Data has been updated Successfully", {
+                        icon: "success"
+                    })
+                    loadSchedule();
+
+                },
+                error: (error) => {
+                    console.log(error);
+                    swal("Error Occurred During Updating Process", {
+                        icon: "error"
+                    })
+                }
+            })
+
         })
 
         $(document).on("click", "a.activeClass", function() {
@@ -259,7 +320,9 @@ include '../include/footer.php';
                                 action: "updateSchedule"
                             },
                             success: (res) => {
-
+                                swal("Schedule state has been updated...", {
+                                    icon: "success"
+                                })
                                 loadSchedule();
                                 // displayToast(res.message, "success", 4000)
                             },
@@ -297,13 +360,16 @@ include '../include/footer.php';
                                 action: "deleteSchedule"
                             },
                             success: (res) => {
-
                                 loadSchedule();
-                                // displayToast(res.message, "success", 4000)
+                                swal("Schedule state has been updated...", {
+                                    icon: "success"
+                                })
                             },
                             error: (res) => {
                                 console.log(res)
-                                // displayToast("Internal Server Error Ocurred 🤷‍♂😢️", "error", 2000);
+                                swal("Error Occurred During This Process", {
+                                    icon: "error"
+                                })
                             }
                         })
 
@@ -335,7 +401,9 @@ include '../include/footer.php';
                                 action: "updateSchedule"
                             },
                             success: (res) => {
-                                alert(res.message)
+                                swal("Schedule state has been updated...", {
+                                    icon: "success"
+                                })
                                 loadSchedule();
                                 // displayToast(res.message, "success", 4000)
                             },
@@ -351,32 +419,32 @@ include '../include/footer.php';
                 });
 
         })
-// Convert the time format from 12-hour to 24-hour
-function convertTimeTo24Hour(time) {
-  if (!time) {
-    // Handle the case where the time is undefined or empty
-    return '';
-  }
+        // Convert the time format from 12-hour to 24-hour
+        function convertTimeTo24Hour(time) {
+            if (!time) {
+                // Handle the case where the time is undefined or empty
+                return '';
+            }
 
-  const [timePart, meridiem] = time.split(/(?<=\d)\s*([AP]M)/i);
-  const timeParts = timePart.split(":");
+            const [timePart, meridiem] = time.split(/(?<=\d)\s*([AP]M)/i);
+            const timeParts = timePart.split(":");
 
-  if (timeParts.length !== 2 || !meridiem) {
-    // Handle invalid time format
-    return '';
-  }
+            if (timeParts.length !== 2 || !meridiem) {
+                // Handle invalid time format
+                return '';
+            }
 
-  let [hours, minutes] = timeParts;
-  hours = parseInt(hours);
+            let [hours, minutes] = timeParts;
+            hours = parseInt(hours);
 
-  if (meridiem.toUpperCase() === "PM" && hours !== 12) {
-    hours += 12;
-  } else if (meridiem.toUpperCase() === "AM" && hours === 12) {
-    hours = 0;
-  }
+            if (meridiem.toUpperCase() === "PM" && hours !== 12) {
+                hours += 12;
+            } else if (meridiem.toUpperCase() === "AM" && hours === 12) {
+                hours = 0;
+            }
 
-  hours = hours.toString().padStart(2, "0");
-  return `${hours}:${minutes}`;
-}
+            hours = hours.toString().padStart(2, "0");
+            return `${hours}:${minutes}`;
+        }
     })
 </script>

@@ -239,7 +239,7 @@ WHERE schedules.date='$date' AND schedules.dr_id='$dr_id' AND schedules.availabl
         extract($_POST);
         $res = array();
         $data = array();
-        $sql = "UPDATE `schedules` SET `date`='$date',`from_time`='$from_time',`to_time`='$to_time',`range_number`='$range',`duration`='$duration',`card_price`='$price' WHERE `sch_id`='$id';";
+        $sql = "UPDATE `schedules` SET `dr_id`='$dr_id',`date`='$date',`from_time`='$from_time',`to_time`='$to_time',`range_number`='$range',`duration`='$duration',`card_price`='$price' WHERE `sch_id`='$id';";
         if (!$conn)
             $res = array("error" => "there is an error");
         else {

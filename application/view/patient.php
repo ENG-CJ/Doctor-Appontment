@@ -1,4 +1,5 @@
 <?php
+include_once "../include/session.php";
 include '../include/links.php';
 include '../include/header.php';
 include '../include/sidebar.php';
@@ -34,8 +35,8 @@ include '../include/sidebar.php';
                 <div class="card">
                     <div class="card-header">
                         <h5>List Of Patients</h5>
-                        <button id="addNew" data-toggle="modal" data-target="#exampleModal"
-                            class="btn btn-primary float-right add">Add Patient</button>
+                        <!-- <button id="addNew" data-toggle="modal" data-target="#exampleModal"
+                            class="btn btn-primary float-right add">Add Patient</button> -->
                     </div>
                     <div class="card-block table-border-style p-3">
                         <div class="table-responsive">
@@ -519,8 +520,9 @@ include '../include/footer.php';
                         tr += `<td>${values.gender}</td>`;
                         tr += `<td>${values.mobile}</td>`;
                         tr += `<td>${values.address}</td>`;
-
-                        tr += `<td><a class="btn btn-success editPatient" editID=${values.pat_id}><i class="fa-solid fa-pen-to-square"></i></a>
+//   <a class="btn btn-success editPatient" editID=${values.pat_id}><i class="fa-solid fa-pen-to-square"></i></a>
+                        tr += `<td>
+                      
          <a class="btn btn-danger deletePatient" delId=${values.pat_id}><i class="fa-solid fa-xmark"></i></a>
          <a class="btn btn-primary viewPatient" viewID=${values.pat_id}><i class="fa-solid fa-eye"></i></a>
          
