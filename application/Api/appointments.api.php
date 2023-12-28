@@ -29,7 +29,7 @@ WHERE appo_date='$date' AND dr_id='$dr_id' AND status!='complete'";
         $response = array();
         $data = array();
         $sql = "SELECT * FROM appointment
-WHERE appo_date='$date' AND pat_id='$pat_id' AND status!='complete'";
+WHERE appo_date='$date' AND pat_id='$pat_id' AND dr_id='$dr' AND status!='complete'";
         if (!$conn)
             $response = array("error" => "error from database", "status" => false);
         else {
@@ -40,9 +40,11 @@ WHERE appo_date='$date' AND pat_id='$pat_id' AND status!='complete'";
         }
         echo json_encode($response);
     }
-    public function loadAppointments($conn)
+    public function loadAppointmentsForPatient($conn)
     {
         extract($_POST);
+        session_start();
+        $current_user=$_SESSION['user_id'];
         $response = array();
         $data = array();
         $sql = "SELECT appo_id,appo_date,diagnose.name as diagnose,doctors.name as doctor,
@@ -50,7 +52,7 @@ WHERE appo_date='$date' AND pat_id='$pat_id' AND status!='complete'";
 JOIN doctors
 on doctors.dr_id=appointment.dr_id
 JOIN diagnose on appointment.diagnose_id=diagnose.diganose_id
-WHERE appointment.pat_id=14";
+WHERE appointment.pat_id='$current_user'";
         if (!$conn)
             $response = array("error" => "error from database", "status" => false);
         else {
@@ -103,8 +105,10 @@ WHERE appointment.pat_id=14";
     {
         extract($_POST);
         $response = array();
+        session_start();
+        $current_id=$_SESSION['user_id'];
         $data = array();
-        $sql = "INSERT INTO reviews(`review`,`dr_id`,`pat_id`,`appo_id`,`description`) VALUES('$review','$id',14,'$appo_id','$description')";
+        $sql = "INSERT INTO reviews(`review`,`dr_id`,`pat_id`,`appo_id`,`description`) VALUES('$review','$id','$current_id','$appo_id','$description')";
         if (!$conn)
             $response = array("error" => "error from database", "status" => false);
         else {
@@ -120,8 +124,10 @@ WHERE appointment.pat_id=14";
     {
         extract($_POST);
         $response = array();
+        session_start();
+        $current_id = $_SESSION['user_id'];
         $data = array();
-        $sql = "SELECT *FROM reviews where pat_id=14 AND appo_id='$appo_id'";
+        $sql = "SELECT *FROM reviews where pat_id='$current_id ' AND appo_id='$appo_id'";
         if (!$conn)
             $response = array("error" => "error from database", "status" => false);
         else {
@@ -344,10 +350,12 @@ WHERE appointment.appo_id='$id'";
     }
     public function getReminderData($conn)
     {
+        session_start();
+        $current_id=$_SESSION['user_id'];
         extract($_POST);
         $response = array();
         $data = array();
-        $sql = "SELECT *From reminder where user=28 and isRead='false'";
+        $sql = "SELECT *From reminder where user='$current_id' and isRead='false'";
         if (!$conn)
             $response = array("error" => "error from database", "status" => false);
         else {
@@ -368,8 +376,10 @@ WHERE appointment.appo_id='$id'";
     {
         extract($_POST);
         $response = array();
+         session_start();
+        $current_id=$_SESSION['user_id'];
         $data = array();
-        $sql = "SELECT *From reminder where user=28 and isRead='false'";
+        $sql = "SELECT *From reminder where user='$current_id' and isRead='false'";
         if (!$conn)
             $response = array("error" => "error from database", "status" => false);
         else {
@@ -524,10 +534,12 @@ where pat_id='$id'";
     }
     public function updateReminderData($conn)
     {
+        session_start();
+        $cur=$_SESSION['user_id'];
         extract($_POST);
         $response = array();
         $data = array();
-        $sql = "UPDATE reminder SET isRead='true' where user=28";
+        $sql = "UPDATE reminder SET isRead='true' where user='$cur'";
         if (!$conn)
             $response = array("error" => "error from database", "status" => false);
         else {
@@ -560,6 +572,27 @@ where pat_id='$id'";
     }
     public function makeAppointment($conn)
     {
+        extract($_POST);
+        $response = array();
+
+        $sql = "INSERT INTO `appointment`(`appo_date`, `diagnose_id`, `symptom_description`, `dr_id`, `pat_id`,`status`,`reminder`) VALUES('$appointment_date','$diagnose','$description','$dr_id','$pat_id','Pending','$reminder')";
+        if (!$conn) {
+            $response = array("error" => "there is an error connection", "status" => false);
+        } else {
+            $result = $conn->query($sql);
+            if ($result) {
+                $response = array("message" => "Doctor successfully created...", "status" => true);
+            } else {
+                $response = array("error" => " error connection", "Status" => false);
+            }
+        }
+
+        echo json_encode($response);
+    }
+    public function makeAppointmentForPatient($conn)
+    {
+        session_start();
+        $pat_id=$_SESSION['user_id'];
         extract($_POST);
         $response = array();
 

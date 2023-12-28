@@ -67,7 +67,7 @@ class Admin extends DatabaseConnection
         extract($_POST);
         $response = array();
 
-        $sql = "INSERT into admins(`username`,`email`,`password`) VALUES ('$username','$email','$password')";
+        $sql = "INSERT into admins(`username`,`email`,`password`,`type`,`status`) VALUES ('$username','$email','$password','admin','$status')";
         if (!$_conn)
             $response = array("error" => "There is an error connection ", "status" => false);
         else {
@@ -121,7 +121,7 @@ class Admin extends DatabaseConnection
         extract($_POST);
         $response = array();
 
-        $sql = "UPDATE admins set username='$username', email='$email'  where admin_id='$id';";
+        $sql = "UPDATE admins set username='$username', email='$email', `status`='$status'  where admin_id='$id';";
         if (!$_conn)
             $response = array("error" => "There is an error connection ", "status" => false);
         else {

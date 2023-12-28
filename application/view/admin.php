@@ -46,7 +46,7 @@ include '../include/links.php';
                                         <th>#</th>
                                         <th>username</th>
                                         <th>email</th>
-
+                                        <th>Status</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -86,7 +86,7 @@ include '../include/links.php';
                     </div>
                     <div class="mb-3">
                         <label for="message-text" class="col-form-label">Password</label>
-                        <input type="text" class="form-control password" placeholder="@password" id="recipient-name" required>
+                        <input type="password" class="form-control password" placeholder="@password" id="recipient-name" required>
                         <input type="text" hidden class="form-control id" id="recipient-name">
                     </div>
                     <div class="mb-3" style="display: flex; align-items: center;">
@@ -96,6 +96,15 @@ include '../include/links.php';
                         </label>
 
                     </div>
+                    <div class="mb-3">
+                        <label for="message-text" class="col-form-label">Status</label>
+                        <!-- <input type="text" class="form-control status" value="active" placeholder="status" disabled> -->
+                        <select name="" id="" class="form-select status">
+                            <option value="active">active</option>
+                            <option value="block">block</option>
+                        </select>
+                    </div>
+
                 </form>
             </div>
             <div class="modal-footer">
@@ -114,6 +123,7 @@ include '../include/footer.php';
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
 <script src="../js/validations.js"></script>
+<script src="../js/utils.js"></script>
 
 <script src='../js/jquery-3.3.1.min.js'></script>
 <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
@@ -122,8 +132,13 @@ include '../include/footer.php';
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script>
     $(document).ready(() => {
+        $(".showPass").on("change", function(e) {
+            showAndHidePass(e.target.checked,$(".password"));
+        })
         $(".add").click(() => {
             $(".adminModal").modal("show")
+            $(".status").val("active")
+            $(".status").prop("disabled", true);
             clearInputData(
                 $(".username"),
                 $(".email"),
@@ -150,6 +165,7 @@ include '../include/footer.php';
                         username: $(".username").val(),
                         email: $(".email").val(),
                         password: $(".password").val(),
+                        status: $(".status").val(),
                         action: "createAdmin"
                     }
                     if (!containsOnlyAlphanumeric($('.username').val())) {
@@ -192,6 +208,7 @@ include '../include/footer.php';
                         username: $(".username").val(),
                         email: $(".email").val(),
                         password: $(".password").val(),
+                        status: $(".status").val(),
                         id: $(".id").val(),
                         action: "updateAdmin",
 
@@ -258,6 +275,7 @@ include '../include/footer.php';
                         tr += `<td>${value.admin_id}</td>`
                         tr += `<td>${value.username}</td>`
                         tr += `<td>${value.email}</td>`
+                        tr += `<td>${value.status}</td>`
                         tr += `<td><a class='btn btn-success editButton' editID=${value.admin_id}>Edit</a>
                      <a class='btn btn-danger deleteAdmin' delID=${value.admin_id}>Delete</a></td>`
                         tr += '</tr>'
@@ -287,8 +305,10 @@ include '../include/footer.php';
                 },
                 url: "../Api/admins.api.php",
                 success: (res) => {
+                    $(".status").prop("disabled", false);
                     console.log(res)
                     $('.username').val(res.data[0].username)
+                    $('.status').val(res.data[0].status)
                     $('.email').val(res.data[0].email)
                     $('.password').val(res.data[0].password)
                     $('.id').val(res.data[0].admin_id)

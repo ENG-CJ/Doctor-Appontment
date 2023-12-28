@@ -208,7 +208,7 @@ include './include/links.php';
         return emailRegex.test(email);
       }
 
-      function displayMessage(message) {
+      function displayMessage(message, timeout = 3000) {
         $(".error-handler").html(`
                 <div class="alert alert-danger">
                       <strong class='text-dark'>${message}</strong>
@@ -217,7 +217,7 @@ include './include/links.php';
             `);
         setTimeout(() => {
           $(".error-handler").html("");
-        }, 3000);
+        }, timeout);
       }
 
 
@@ -244,13 +244,20 @@ include './include/links.php';
               $('.login').attr("disabled", false)
               const {
                 isFound,
+
                 data
               } = res;
               console.log(data)
               if (isFound) {
-                sessionStorage.setItem('username', data.name);
+                if (data.status.toLowerCase() == "active") {
+                  sessionStorage.setItem('username', data.name);
+                  window.location.href = "./view/dashboard.php";
+                } else {
+                  displayMessage("This account is currently inactive. To resolve this issue, kindly reach out to our <a href='https://wa.link/9s85k6' class='text-light fw-bold'>support team</a>. Alternatively, you may wait for the next 12 hours.", 10000)
+                }
 
-                window.location.href = "./view/dashboard.php";
+
+
               } else {
                 displayMessage("Incorrect Email or Password ")
               }

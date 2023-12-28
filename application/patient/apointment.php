@@ -1,4 +1,5 @@
 <?php
+include '../include/session.php';
 include '../include/links.php';
 include '../include/header.php';
 include '../include/sidebar.php';
@@ -199,6 +200,36 @@ h
     </div>
 </div>
 
+<div class="modal fade reminder-info" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-success" id="exampleModalLongTitle">
+                    <i class="fa-solid fa-bell text-success mr-2"></i>
+                    Reminder!
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body p-2">
+                <div class="alert alert-success">
+                    <strong>You have an appointment reminder.</strong><br>
+
+                    <div class="my-3">
+                        <button class="btn btn-danger markAsRead">Mark All as read</button>
+                        <button class="btn btn-primary viewReminder">View</button>
+                    </div>
+                </div>
+            </div>
+            <!-- <div class="modal-footer">
+
+                <button type="button" class="btn btn-primary ok">Ok</button>
+            </div> -->
+        </div>
+    </div>
+</div>
+
 <?php
 include '../include/footer.php';
 
@@ -213,9 +244,62 @@ include '../include/footer.php';
 <script src="../iziToast-master/dist/js/iziToast.min.js"></script>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script src='../printThis.js'></script>
+<script src='../js/utils.js'></script>
 
 <script>
     $(document).ready(function() {
+        $('.viewReminder').on("click", function(e) {
+            window.location.href = "./reminders.php";
+        })
+
+        $(".markAsRead").click(() => {
+            $.ajax({
+                method: "POST",
+                dataType: "JSON",
+                data: {
+                    action: "updateReminderData",
+                },
+                url: "../Api/appointments.api.php",
+                success: (res) => {
+                    displayToast("Reminder Marked as read", "success", 2000);
+                    $(".reminder-info").modal("hide");
+
+                    // console.log(res);
+                },
+                error: (res) => {
+                    console.log(res);
+                }
+            })
+        })
+
+        var audio = new Audio("../audios/reminder.mpeg")
+        const getReminderData = () => {
+            $.ajax({
+                method: "POST",
+                dataType: "JSON",
+                data: {
+                    action: "getReminderData",
+                },
+                url: "../Api/appointments.api.php",
+                success: (res) => {
+
+                    if (res.hasData) {
+                        {
+
+                            audio.play();
+                            $(".reminder-info").modal("show");
+                        }
+                    } else {
+                        $(".reminder-info").modal("hide");
+                    }
+                    // console.log(res);
+                },
+                error: (res) => {
+                    console.log(res);
+                }
+            })
+        }
+        setInterval(getReminderData, 7000)
         // $(document).on("click", 'a.completedReview', function() {
         //     $('.reviewModal').modal("show")
 
@@ -237,10 +321,28 @@ include '../include/footer.php';
                     swal("Oops!", "Since you have already provided a review for the appointment, it is not possible to submit a second review for the same appointment. Thank you for your feedback.", "error");
                     return;
                 }
+                $('.reviewModal').modal("hide")
+                swal("Could you please provide a brief description of the reasons for your satisfaction?", {
+                        content: "input",
+                    })
+                    .then((value) => {
+                        if (value == "") {
+                            swal(
+                                "We could'nt Processed your action, please provide description", "", "error", {
 
-                makeReview("satisfied")
-                swal(
-                    "Thank you for feedback!", "", "success", {});
+                                });
+                            return;
+                        }
+                        makeReview("satisfied", value)
+                        swal(
+                            "Thank you for feedback!", "", "success", {
+
+                            });
+                    });
+
+                // makeReview("satisfied")
+                // swal(
+                //     "Thank you for feedback!", "", "success", {});
             })
 
         })
@@ -259,6 +361,13 @@ include '../include/footer.php';
                         content: "input",
                     })
                     .then((value) => {
+                        if (value == "") {
+                            swal(
+                                "We could'nt Processed your action, please provide description", "", "error", {
+
+                                });
+                            return;
+                        }
                         makeReview("unsatisfied", value)
                         swal(
                             "Thank you for feedback!", "", "success", {
@@ -604,8 +713,8 @@ include '../include/footer.php';
             })
         };
 
-        function getCardPriceAndTiming(date,id, response) {
-           
+        function getCardPriceAndTiming(date, id, response) {
+
             $.ajax({
                 method: "POST",
                 dataType: "JSON",
@@ -643,9 +752,9 @@ include '../include/footer.php';
         $(document).on("click", "a.viewAppo", function() {
             var id = $(this).attr("viewID");
             readPrintableData(id, (res) => {
-                
-                getCardPriceAndTiming(res.data[0].appo_date,res.data[0].drID,response => {
-                    
+
+                getCardPriceAndTiming(res.data[0].appo_date, res.data[0].drID, response => {
+
                     $('.body-content').html(`
                 
                  <img src="http://localhost/Doctor-Appontment/application/images/doctor-logo.png" alt="" class="image-fluid w-100">
@@ -833,7 +942,7 @@ include '../include/footer.php';
                 method: "POST",
                 dataType: "JSON",
                 data: {
-                    "action": "loadAppointments"
+                    "action": "loadAppointmentsForPatient"
                 },
                 url: "../Api/appointments.api.php",
                 success: (res) => {

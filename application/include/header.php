@@ -1,7 +1,8 @@
 <?php
 include_once "../config/conn.db.php";
+$_current_id=$_SESSION['user_id'];
 $hasData = false;
-$sql = "SELECT *FROM reminder where user=28 and isRead='false'";
+$sql = "SELECT *FROM reminder where user='$_current_id' and isRead='false'";
 $data = array();
 $conn = new DatabaseConnection();
 $res = $conn->getConnection()->query($sql);

@@ -219,7 +219,7 @@ session_destroy();
         return emailRegex.test(email);
       }
 
-      function displayMessage(message) {
+      function displayMessage(message, time = 3000) {
         $(".error-handler").html(`
                 <div class="alert alert-danger">
                       <strong class='text-dark'>${message}</strong>
@@ -228,7 +228,7 @@ session_destroy();
             `);
         setTimeout(() => {
           $(".error-handler").html("");
-        }, 3000);
+        }, time);
       }
 
 
@@ -254,11 +254,21 @@ session_destroy();
               console.log(res);
               const {
                 isFound,
+
                 data
               } = res;
               console.log(data)
               if (isFound) {
-                window.location.href = "./view/dashboard.php";
+                if ($(".table select").val() == "doctors") {
+                  if (data.verified.toLowerCase() == "no") {
+                    displayMessage("This account is currently inactive. To resolve this issue, kindly reach out to our <a href='https://wa.link/9s85k6' class='text-primary fw-bold'>support team</a>. Alternatively, you may wait for the next 12 hours.", 10000);
+                  } else {
+                    window.location.href = "./doctor/dashboard.php";
+                  }
+                } else {
+                  window.location.href = "./patient/active_doctors.php";
+                }
+
               } else {
                 displayMessage("Incorrect Email address or password");
               }
@@ -468,7 +478,7 @@ session_destroy();
             }, 3000);
 
 
-           
+
           },
           error: (err) => {
             console.log(err);

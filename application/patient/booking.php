@@ -1,12 +1,10 @@
 <?php
+include_once '../include/session.php';
 include '../include/links.php';
 include '../include/header.php';
 include '../include/sidebar.php';
 ?>
 
-<!--**********************************
-            Content body start
-        ***********************************-->
 <div class="content-body">
     <div class="container-fluid">
         <div class="row page-titles mx-0">
@@ -103,19 +101,43 @@ include '../include/sidebar.php';
                                     <option value="">Select Doctor</option>
                                 </select>
                             </div>
-                            <!-- <div class="col-12 mt-4">
-                                <label for="">time</label>
-                                <input type="time" name="" id="" class='form-control time'>
+                            <!-- <div class="col-12 my-2">
+                                <label for="">Patient</label>
+                                <select name="" id="" class="form-control patients">
+                                    <option value="">Select Patient</option>
+                                </select>
                             </div> -->
 
+
                             <div class="col-12 mt-4">
-                                <label for="">Symptoms</label>
+                                <label for="">Symptoms Description *</label>
                                 <textarea class='form-control description' placeholder="Please describe your symptoms in advance."></textarea>
+                            </div>
+                            <div class="col-12 mt-5">
+                                <div class='alert alert-primary'>You can use the "reminder" method to prompt when the appointment is due.</div>
+                                <div class="d-flex">
+                                    <div class="form-check form-check-inline d-flex align-items-center">
+                                        <input class="form-check-input method" type="radio" name="method" id="email" value="email">
+                                        <label class="form-check-label" for="email">Via Email</label>
+                                    </div>
+                                    <div class="form-check form-check-inline d-flex align-items-center">
+                                        <input class="form-check-input method" type="radio" name="method" id="call" value="call">
+                                        <label class="form-check-label" for="call">Via Call</label>
+                                    </div>
+                                    <div class="form-check form-check-inline d-flex align-items-center">
+                                        <input class="form-check-input method" type="radio" name="method" id="system" value="in_system">
+                                        <label class="form-check-label" for="system">In-System</label>
+                                    </div>
+                                    <div class="form-check form-check-inline d-flex align-items-center">
+                                        <input class="form-check-input method" type="radio" checked name="method" id="not" value="none">
+                                        <label class="form-check-label" for="not">Do not remind me</label>
+                                    </div>
+                                </div>
                             </div>
 
                             <div class="col-12 mt-4">
                                 <button class='btn btn-success create'>Create</button>
-                                <button class='btn btn-primary'>Back</button>
+                                <button class='btn btn-primary backBtn'>Back</button>
                             </div>
                         </div>
                     </div>
@@ -128,6 +150,11 @@ include '../include/sidebar.php';
 if (isset($_GET['dr_id'])) {
 ?>
     <input type='text' class='dr' hidden value="<?php echo $_GET['dr_id'] ?>" />
+<?php
+}
+if (isset($_SESSION['user_id'])) {
+?>
+    <input type='text' class='current_patient' hidden value="<?php echo $_SESSION['user_id'] ?>" />
 <?php
 }
 
@@ -156,6 +183,11 @@ include '../include/footer.php';
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script>
     $(document).ready(function() {
+        var methodType = "none"
+        $(".method").on("change", function(e) {
+            methodType = e.target.value
+        })
+
         function getScheduleRange(getResponse) {
             $.ajax({
                 method: "POST",
@@ -196,7 +228,7 @@ include '../include/footer.php';
 
         }
         loadDescriptions(res => {
-            console.log("now response is ",res)
+            console.log("now response is ", res)
             if (res.data.length > 0) {
                 res.data.forEach(value => {
                     if (value.description != "" || value.description != null) {
@@ -264,14 +296,15 @@ include '../include/footer.php';
 
         }
 
-        function getSpecificPatient(getRes) {
+        function getSpecificPatientAppointment(getRes) {
             $.ajax({
                 method: "POST",
                 dataType: "JSON",
                 data: {
                     action: "getSpecificPatient",
-                    pat_id: 14,
+                    pat_id: $(".current_patient").val(),
                     date: $(".date").val(),
+                    dr: $(".dr").val(),
                 },
                 url: "../Api/appointments.api.php",
                 success: (res) => {
@@ -284,14 +317,16 @@ include '../include/footer.php';
 
         }
         $(document).on("click", ".create", function() {
+          
             var data = {
                 appointment_date: $('.date').val(),
                 diagnose: $('.diagnose').val(),
                 // time: formatTime($('.time').val()),
                 description: $(".description").val(),
-                pat_id: 14,
+                reminder: methodType,
+                // pat_id: $('.patients').val(),
                 dr_id: $('.dr').val(),
-                action: "makeAppointment"
+                action: "makeAppointmentForPatient"
             }
             getScheduleRange(res => {
                 console.log(res)
@@ -300,7 +335,7 @@ include '../include/footer.php';
 
                         swal("No Space Available!", "The desired number of appointments has been reached for this particular schedule");
                     } else {
-                        getSpecificPatient(result => {
+                        getSpecificPatientAppointment(result => {
                             if (result.rows > 0)
                                 swal("Oops!", "You are not allowed to schedule multiple appointments on the same date", "error");
                             else {
@@ -310,7 +345,7 @@ include '../include/footer.php';
                                     data: data,
                                     url: "../Api/appointments.api.php",
                                     success: (res) => {
-                                        swal("Booked ✔!", "Your appointment has been scheduled..", "succes");
+                                        swal("Booked ✔!", "Your appointment has been scheduled..", "success");
                                     },
                                     error: (err) => {
                                         console.log(err);
@@ -371,6 +406,51 @@ include '../include/footer.php';
             })
         }
         readDiagnoses()
+
+        function readPatients() {
+            $.ajax({
+                method: "POST",
+                dataType: "JSON",
+                data: {
+
+                    action: "readPatientsData",
+                },
+                url: "../Api/patient.api.php",
+                success: (res) => {
+                    console.log(res);
+
+                    var {
+                        data
+                    } = res;
+                    var tr = "<tr>";
+                    var option = "<option value=''>Select Patient</option>";
+                    if (data.length > 0) {
+
+                        data.forEach(value => {
+
+                            option += `<option value="${value.pat_id}">${value.name}</option>`;
+
+
+                        })
+
+                        $('.patients').html(option)
+
+                    } else {
+                        var option = "<option value=''>Select Patient</option>";
+                        $('.patients').html(option)
+
+                    }
+
+
+
+
+                },
+                error: (err) => {
+                    console.log(err);
+                }
+            })
+        }
+        readPatients()
 
         function readScheduleSelectedDoctor() {
             $.ajax({
@@ -437,6 +517,8 @@ include '../include/footer.php';
         }
         readScheduleSelectedDoctor()
 
+        $(".backBtn").click(() => window.location.href = "active_doctors.php")
+
         function readSelectedDoctor() {
             $.ajax({
                 method: "POST",
@@ -452,11 +534,12 @@ include '../include/footer.php';
                         data
                     } = res;
                     $(".doctor_details").html(`
-                    
-                        <div class="col-5">
-                        <img src="../images/${data[0].profile_image}" alt="" class="img-fluid w-100" style='border-radius: 20px'>
+                    <div class="col-6">
+                  <div class="all-detals d-flex">
+                        <div class="left mr-3">
+                        <img src="../uploads/${data[0].profile_image}" alt="" class="img-fluid" style="border-radius: 30px;border: 1px solid green; width: 220px; height: 300px">
                     </div>
-                    <div class="col-7">
+                    <div class="right">
                         <strong>Full Name</strong>
                         <p class='ml-2'>${data[0].drName}</p>
                         <strong>Emergency Number</strong>
@@ -466,7 +549,11 @@ include '../include/footer.php';
                         <strong>Hospital (work-in)</strong>
                         <p class='ml-2'>${data[0].hosName}</p>
                     </div>
-                    <div class="col-12">
+                  </div>
+
+                    </div>
+                  
+                    <div class="col-6">
                         <strong>Description (Qualifications)</strong>
                         <p>${data[0].drDescription}.</p>
                     </div>

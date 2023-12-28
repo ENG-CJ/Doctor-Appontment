@@ -22,7 +22,7 @@ class Auth extends DatabaseConnection
                 if (mysqli_num_rows($result) > 0) {
                     session_start();
                     $row = $result->fetch_assoc();
-                 
+
                     $_SESSION['type'] = $row['type'];
                     $_SESSION['user_id'] = $row['admin_id'];
                     $res = array("message" => "success", "data" => $row, "isFound" => true);
@@ -40,14 +40,14 @@ class Auth extends DatabaseConnection
         extract($_POST);
         $res = array();
         $data = array();
-        if(strtolower($table)=="admins")
-           $sql = "SELECT *FROM $table WHERE email='$email' OR username='$username'";
-        else if(strtolower($table)=="hospitals")
-           $sql = "SELECT *FROM $table WHERE hos_email='$email' OR main_number='$mobile' OR hos_name='$username'";
-        else if(strtolower($table)=="proffision")
-           $sql = "SELECT *FROM $table WHERE pro_name='$username'";
-        else if(strtolower($table)=="diagnose")
-           $sql = "SELECT *FROM $table WHERE name='$username'";
+        if (strtolower($table) == "admins")
+            $sql = "SELECT *FROM $table WHERE email='$email' OR username='$username'";
+        else if (strtolower($table) == "hospitals")
+            $sql = "SELECT *FROM $table WHERE hos_email='$email' OR main_number='$mobile' OR hos_name='$username'";
+        else if (strtolower($table) == "proffision")
+            $sql = "SELECT *FROM $table WHERE pro_name='$username'";
+        else if (strtolower($table) == "diagnose")
+            $sql = "SELECT *FROM $table WHERE name='$username'";
         else
             $sql = "SELECT *FROM $table WHERE email='$email' OR mobile='$mobile'";
 
@@ -79,7 +79,7 @@ class Auth extends DatabaseConnection
         extract($_POST);
         $res = array();
         $data = array();
-        $sql = "SELECT name,password,type from $table where 
+        $sql = "SELECT *from  $table where 
         email='$email' AND password='$pass'";
         if (!$conn)
             $res = array("error" => "there is an error in the connction");
@@ -90,12 +90,13 @@ class Auth extends DatabaseConnection
                     session_start();
                     $row = $result->fetch_assoc();
                     $_SESSION['type'] = $row['type'];
-                    if (strtolower($table) == "admins" || strtolower($table) == "admin")
-                        $_SESSION['name'] = $row["username"];
+                    $_SESSION['name'] = $row["name"];
+                    if ($table == "patients")
+                        $_SESSION['user_id'] = $row['pat_id'];
                     else
-                        $_SESSION['name'] = $row["name"];
+                        $_SESSION['user_id'] = $row['dr_id'];
 
-                    $res = array("message" => "success", "data" => $data, "isFound" => true);
+                    $res = array("message" => "success", "data" => $row, "isFound" => true);
                 } else
                     $res = array("message" => "success", "isFound" => false);
             } else {

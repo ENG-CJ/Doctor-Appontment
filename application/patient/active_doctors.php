@@ -1,4 +1,5 @@
 <?php
+include_once "../include/session.php";
 include '../include/links.php';
 include '../include/header.php';
 include '../include/sidebar.php';
@@ -27,12 +28,11 @@ include '../include/sidebar.php';
                             <div class="col-12 proffision_selection">
                                 <label for="">Filter Doctor Profession</label>
                                 <select id="single-select" class="form-control filter">
-                                    <!-- <option value="all">All</option>
-                                    <option value="AL">Alabama</option>
-                                    <option value="WY">Wyoming</option> -->
+
                                 </select>
                             </div>
                             <div class="col-12 my-2">
+
                                 <div class="row all-doctors">
 
 
@@ -90,8 +90,15 @@ include '../include/footer.php';
                         pro: $('.filter').val()
                     },
                     url: "../Api/proffision.api.php",
+                    beforeSend: () => {
+                        $('.all-doctors').html(`  <div class="d-flex align-items-center mt-3">
+  
+  <div class="spinner-border ml-2" role="status" aria-hidden="true"></div>
+  <strong class='ml-3'>Fetching Data...</strong>
+</div>`)
+                    },
                     success: (res) => {
-
+                        $('.all-doctors').html("")
                         var {
                             data
                         } = res;
@@ -106,27 +113,39 @@ include '../include/footer.php';
                     `);
                             return;
                         }
+                        var review = 0;
                         data.forEach(value => {
-                            $('.all-doctors').append(`
+                            var name = value.drName;
+
+
+                            getReviewNumber(value.drID, res => {
+                                review = res
+                                $('.all-doctors').append(`
                     <div class="col-6">
                                         <div class="card">
                                             <div class="card-header">
                                                 <h6>From: ${value.hosName}</h6>
                                             </div>
                                             <div class="card-body">
-                                                <div class="row">
-                                                    <div class="col-6">
-                                                        <img src="../images/${value.profile_image}" class='img-fluid' style="border-radius: 20px" alt="">
+                                                <div class="all d-flex">
+                                                    <div class="left mr-3">
+                                                        <img src="../uploads/${value.profile_image}" class='img-fluid' style="border-radius: 30px;border: 1px solid green; width: 200px; height: 230px" alt="">
                                                         <div class="my-2 ml-2">
-                                                            <label for="" class='text-muted'>
-                                                                <i class="fa-solid fa-circle-check"></i>
-                                                                Verified</label>
+                                                        <span class="badge badge-pill badge-primary">Reviews(All) - ${review}</span>
+                                                           
                                                         </div>
 
                                                     </div>
-                                                    <div class="col-6">
+                                                    <div class="right">
+                                                       <div class="d-flex align-items-center">
+                                                       <div class="name">
                                                         <strong>Dr. Name</strong><br>
-                                                        <label for="">Dr. ${value.drName}</label>
+                                                        <label for="">Dr. ${name}</label>
+                                                       </div>
+                                                       <div class="mt-3 ml-1">
+                                                       <img src="../uploads/ver_icon.png" class="img-fluid" style="width: 30px; height: 30px"/>
+                                                       </div>
+                                                       </div>
                                                         <strong>Profession</strong><br>
                                                         <label for="">${value.pro_name}</label><br>
                                                         <strong>Mobile (Emerg Number)</strong><br>
@@ -141,10 +160,15 @@ include '../include/footer.php';
                                             </div>
                                         </div>
                                     </div>`)
+
+                            });
+
+
                         })
 
                     },
                     error: (err) => {
+                        $('.all-doctors').html("");
                         console.log("error cooyured")
                         console.log(err);
                     }
@@ -191,12 +215,32 @@ include '../include/footer.php';
                     } = res;
                     option = ` <option value="all" selected>All</option>`
                     data.forEach(values => {
-                        option += `<option value="${values.name}">${values.name}</option>`
+                        option += `<option value="${values.pro_name}">${values.pro_name}</option>`
                     });
                     $(".proffision_selection select").html(option);
                 },
                 error: (err) => {
                     console.log(err);
+                }
+            })
+        };
+
+        function getReviewNumber(id, response) {
+            $.ajax({
+                method: "POST",
+                dataType: "JSON",
+                data: {
+                    action: "getReviewNumber",
+                    id: id
+                },
+                url: "../Api/doctor.api.php",
+                success: (res) => {
+                    console.log("number is ", res)
+                    response(res.review);
+                },
+                error: (err) => {
+                    console.log(err);
+                    response("NULL");
                 }
             })
         };
@@ -209,33 +253,66 @@ include '../include/footer.php';
                     action: "readDoctorsHospital",
                 },
                 url: "../Api/doctor.api.php",
+                beforeSend: () => {
+                    $('.all-doctors').html(`  <div class="d-flex align-items-center mt-3">
+  
+  <div class="spinner-border ml-2" role="status" aria-hidden="true"></div>
+  <strong class='ml-3'>Fetching Data...</strong>
+</div>`)
+                },
                 success: (res) => {
+                    $('.all-doctors').html("");
 
                     var {
-                        data
+                        data,
+
                     } = res;
-                    console.log(data);
+                    console.log("data is ", res);
+
+                    if (data.length == 0) {
+                        $('.all-doctors').html(`
+                   <div class='p-3'>
+                    <div class='alert alert-info'>
+                    <strong>No Data Found</strong>
+                    </div></div>
+                    
+                    `);
+                        return;
+                    }
+                    var review = 0;
                     data.forEach(value => {
-                        $('.all-doctors').append(`
+                        var name = value.drName;
+
+
+                        getReviewNumber(value.drID, res => {
+                            review = res;
+
+                            $('.all-doctors').append(`
                     <div class="col-6">
                                         <div class="card">
                                             <div class="card-header">
                                                 <h6>From: ${value.hosName}</h6>
                                             </div>
                                             <div class="card-body">
-                                                <div class="row">
-                                                    <div class="col-6">
-                                                        <img src="../images/${value.profile_image}" class='img-fluid' style="border-radius: 20px" alt="">
+                                                <div class="all d-flex">
+                                                    <div class="left mr-3">
+                                                        <img src="../uploads/${value.profile_image}" class='img-fluid' style="border-radius: 30px;border: 1px solid green; width: 200px; height: 230px" alt="">
                                                         <div class="my-2 ml-2">
-                                                            <label for="" class='text-muted'>
-                                                                <i class="fa-solid fa-circle-check"></i>
-                                                                Verified</label>
+                                                        <span class="badge badge-pill badge-primary">Reviews(All) - ${review}</span>
+                                                           
                                                         </div>
 
                                                     </div>
-                                                    <div class="col-6">
+                                                    <div class="right">
+                                                       <div class="d-flex align-items-center">
+                                                       <div class="name">
                                                         <strong>Dr. Name</strong><br>
-                                                        <label for="">Dr. ${value.drName}</label>
+                                                        <label for="">Dr. ${name}</label>
+                                                       </div>
+                                                       <div class="mt-3 ml-1">
+                                                       <img src="../uploads/ver_icon.png" class="img-fluid" style="width: 30px; height: 30px"/>
+                                                       </div>
+                                                       </div>
                                                         <strong>Profession</strong><br>
                                                         <label for="">${value.pro_name}</label><br>
                                                         <strong>Mobile (Emerg Number)</strong><br>
@@ -253,10 +330,13 @@ include '../include/footer.php';
                                     </div>
                     
                     `)
+                        });
+
                     })
 
                 },
                 error: (err) => {
+                    $('.all-doctors').html("");
                     console.log(err);
                 }
             })

@@ -82,7 +82,7 @@ include '../include/sidebar.php';
                     </div>
                     <div class="card-body">
                         <div class="no-app my-2"></div>
-                        <table class="table table-bordered">
+                        <table class="table table-bordered pending">
                             <thead>
                                 <tr>
 

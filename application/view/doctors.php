@@ -83,11 +83,13 @@ include '../include/sidebar.php';
                     <h5 class="modal-title" id="exampleModalLabel">View Doctor</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body view_body">
+                <div class="modal-body view_body" id="print-area">
 
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-success print">Print</button>
+
 
                 </div>
             </div>
@@ -183,9 +185,13 @@ include '../include/footer.php';
 <script src="../iziToast-master/dist/js/iziToast.min.js"></script>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script src='../js/jquery-3.3.1.min.js'></script>
+<script src='../printThis.js'></script>
 
 <script>
     $(document).ready(function() {
+            $(".print").click(() => {
+                $("#print-area").printThis();
+            })
 
             $('.filter-doctors').change(() => {
                 if ($('.filter-doctors').val().toLowerCase() == "all") {
@@ -439,7 +445,7 @@ include '../include/footer.php';
                                 <span>${data.pro_name}</span>
                             </div>
                             <div class="my-image">
-                                <img src="../uploads/${data.profile_image}" alt="" class="img-fluid img-thumbnail" style='width: 110px; height: 110px'>
+                                <img src="http://localhost/Doctor-Appontment/application/uploads/${data.profile_image}" alt="" class="img-fluid img-thumbnail" style='width: 110px; height: 110px'>
                             </div>
                         </div>
 
