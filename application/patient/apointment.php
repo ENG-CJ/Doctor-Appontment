@@ -1,5 +1,8 @@
 <?php
 include '../include/session.php';
+include_once "../include/permission.auth.php";
+
+Permission::checkAuthPermissionSource("patient");
 include '../include/links.php';
 include '../include/header.php';
 include '../include/sidebar.php';

@@ -44,7 +44,7 @@ WHERE appo_date='$date' AND pat_id='$pat_id' AND dr_id='$dr' AND status!='comple
     {
         extract($_POST);
         session_start();
-        $current_user=$_SESSION['user_id'];
+        $current_user = $_SESSION['user_id'];
         $response = array();
         $data = array();
         $sql = "SELECT appo_id,appo_date,diagnose.name as diagnose,doctors.name as doctor,
@@ -106,7 +106,7 @@ WHERE appointment.pat_id='$current_user'";
         extract($_POST);
         $response = array();
         session_start();
-        $current_id=$_SESSION['user_id'];
+        $current_id = $_SESSION['user_id'];
         $data = array();
         $sql = "INSERT INTO reviews(`review`,`dr_id`,`pat_id`,`appo_id`,`description`) VALUES('$review','$id','$current_id','$appo_id','$description')";
         if (!$conn)
@@ -137,6 +137,31 @@ WHERE appointment.pat_id='$current_user'";
                     while ($rows = $result->fetch_assoc())
                         $data[] = $rows;
                     $response = array("status" => true, "data" => $data);
+                }
+            }
+        }
+        echo json_encode($response);
+    }
+    public function validateReminderWithAppointment($conn)
+    {
+        extract($_POST);
+        $response = array();
+
+        $data = array();
+        $sql = "SELECT *FROM appointment where pat_id='$pat_id ' AND appo_id='$appo_id'";
+        if (!$conn)
+            $response = array("error" => "error from database", "status" => false);
+        else {
+            $result = $conn->query($sql);
+            if ($result) {
+                if ($result) {
+                    while ($rows = $result->fetch_assoc())
+                        $data[] = $rows;
+
+                    if (count($data) > 0)
+                        $response = array("status" => true, "hasData" => true, "data" => $data);
+                    else
+                        $response = array("status" => true, "hasData" => false, "data" => $data);
                 }
             }
         }
@@ -206,8 +231,10 @@ WHERE appointment.pat_id='$current_user'";
         extract($_POST);
         $response = array();
         $data = array();
+        session_start();
+        $id = $_SESSION['user_id'];
         $sql = "SELECT appo_date as Date,appointment.status FROM appointment
-WHERE appointment.dr_id=4 AND status='inprogress';";
+WHERE appointment.dr_id='$id' AND status='inprogress';";
         if (!$conn)
             $response = array("error" => "error from database", "status" => false);
         else {
@@ -223,7 +250,7 @@ WHERE appointment.dr_id=4 AND status='inprogress';";
     public function loadAppointmentsForDoctor($conn)
     {
         session_start();
-        $id = $_SESSION['USER_ID'];
+        $id = $_SESSION['user_id'];
         extract($_POST);
         $response = array();
         $data = array();
@@ -279,6 +306,28 @@ ON appointment.dr_id=doctors.dr_id;";
         $sql = "SELECT appointment.appo_id,appointment.appo_date,appointment.diagnose_id,
 appointment.dr_id,appointment.symptom_description, appointment.pat_id,appointment.reminder FROM appointment
 WHERE appointment.appo_id='$id'";
+        if (!$conn)
+            $response = array("error" => "error from database", "status" => false);
+        else {
+            $result = $conn->query($sql);
+            if ($result) {
+                while ($rows = $result->fetch_assoc())
+                    $data[] = $rows;
+                $response = array("status" => true, "data" => $data);
+            }
+        }
+        echo json_encode($response);
+    }
+    public function readOnlyDates($conn)
+    {
+        extract($_POST);
+
+        $response = array();
+        $data = array();
+        session_start();
+        $id=$_SESSION['user_id'];
+        $sql = "SELECT `date` FROM `schedules` WHERE
+schedules.dr_id='$id' ORDER BY `date` DESC";
         if (!$conn)
             $response = array("error" => "error from database", "status" => false);
         else {
@@ -351,7 +400,7 @@ WHERE appointment.appo_id='$id'";
     public function getReminderData($conn)
     {
         session_start();
-        $current_id=$_SESSION['user_id'];
+        $current_id = $_SESSION['user_id'];
         extract($_POST);
         $response = array();
         $data = array();
@@ -376,8 +425,8 @@ WHERE appointment.appo_id='$id'";
     {
         extract($_POST);
         $response = array();
-         session_start();
-        $current_id=$_SESSION['user_id'];
+        session_start();
+        $current_id = $_SESSION['user_id'];
         $data = array();
         $sql = "SELECT *From reminder where user='$current_id' and isRead='false'";
         if (!$conn)
@@ -425,12 +474,45 @@ ON reminder.user=patients.pat_id";
         extract($_POST);
         $response = array();
         $data = array();
+        $sql = "SELECT patients.name as Patient,proffision.pro_name,reviews.id,reviews.description,doctors.name as drName,doctors.profile_image,doctors.email,doctors.dr_id
+FROM reviews
+JOIN doctors
+ON reviews.dr_id=doctors.dr_id
+JOIN proffision
+ON doctors.profision_id=proffision.pro_id
+JOIN Patients 
+ON reviews.pat_id=patients.pat_id
+";
+        if (!$conn)
+            $response = array("error" => "error from database", "status" => false);
+        else {
+            $result = $conn->query($sql);
+            if ($result) {
+                while ($rows = $result->fetch_assoc())
+                    $data[] = $rows;
+                if (count($data) > 0)
+
+                    $response = array("status" => true, "hasData" => true, "data" => $data);
+                else
+                    $response = array("status" => true, "hasData" => false);
+            }
+        }
+        echo json_encode($response);
+    }
+    public function readReviewsForDoctor($conn)
+    {
+        extract($_POST);
+        $response = array();
+        $data = array();
+        session_start();
+        $id = $_SESSION['user_id'];
         $sql = "SELECT proffision.pro_name,reviews.id,reviews.description,doctors.name as drName,doctors.profile_image,doctors.email,doctors.dr_id
 FROM reviews
 JOIN doctors
 ON reviews.dr_id=doctors.dr_id
 JOIN proffision
 ON doctors.profision_id=proffision.pro_id
+where doctors.dr_id='$id'
 ";
         if (!$conn)
             $response = array("error" => "error from database", "status" => false);
@@ -473,18 +555,18 @@ ON doctors.profision_id=proffision.pro_id
     {
         extract($_POST);
         $response = array();
-     
-       
-            $mail = new Mail();
-            $mail->setFullName($drName);
-            $mail->setReceiverEmail($email);
-            $mail->setMessageContent("<h2>Hi, Dr. $drName </h2> $message.");
 
-            if ($mail->sendEmail()) {
-                $response = array("error" => "", "message" => "Email has been sent");
-            } else
-                $response = array("error" => "Failed to send email", "message" => "Email has been sent");
-      
+
+        $mail = new Mail();
+        $mail->setFullName($drName);
+        $mail->setReceiverEmail($email);
+        $mail->setMessageContent("<h2>Hi, Dr. $drName </h2> $message.");
+
+        if ($mail->sendEmail()) {
+            $response = array("error" => "", "message" => "Email has been sent");
+        } else
+            $response = array("error" => "Failed to send email", "message" => "Email has been sent");
+
 
         echo json_encode($response);
     }
@@ -532,10 +614,34 @@ where pat_id='$id'";
         }
         echo json_encode($response);
     }
+    public function readPatientAppointmentData($conn)
+    {
+        extract($_POST);
+        $response = array();
+        $data = array();
+        $sql = "SELECT appo_id,appo_date From appointment where status='Pending' and pat_id='$id'";
+
+
+        if (!$conn)
+            $response = array("error" => "error from database", "status" => false);
+        else {
+            $result = $conn->query($sql);
+            if ($result) {
+                while ($rows = $result->fetch_assoc())
+                    $data[] = $rows;
+                if (count($data) > 0)
+
+                    $response = array("status" => true, "hasData" => true, "data" => $data);
+                else
+                    $response = array("status" => true, "hasData" => false);
+            }
+        }
+        echo json_encode($response);
+    }
     public function updateReminderData($conn)
     {
         session_start();
-        $cur=$_SESSION['user_id'];
+        $cur = $_SESSION['user_id'];
         extract($_POST);
         $response = array();
         $data = array();
@@ -592,7 +698,7 @@ where pat_id='$id'";
     public function makeAppointmentForPatient($conn)
     {
         session_start();
-        $pat_id=$_SESSION['user_id'];
+        $pat_id = $_SESSION['user_id'];
         extract($_POST);
         $response = array();
 

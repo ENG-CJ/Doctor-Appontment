@@ -1,5 +1,8 @@
 <?php
 include_once '../include/session.php';
+include_once "../include/permission.auth.php";
+
+Permission::checkAuthPermissionSource("admin");
 include '../include/links.php';
 include '../include/header.php';
 include '../include/sidebar.php';
@@ -711,7 +714,7 @@ include '../include/footer.php';
 
                                 </div>
                                 <div class="card-body">
-                                    <h5 class="card-title">Review</h5>
+                                    <h5 class="card-title">Review - <strong style='font-style: italic'>${value.Patient}</strong></h5>
                                     <p class="card-text">${value.description}</p>
 
                                     <div class="my-2">

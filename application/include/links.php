@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Focus </title>
     <!-- Favicon icon -->
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <link rel="icon" type="image/png" sizes="16x16" href="../.././images/favicon.png">
     <link rel="stylesheet" href="../.././vendor/owl-carousel/css/owl.carousel.min.css">
     <link rel="stylesheet" href="../.././vendor/owl-carousel/css/owl.theme.default.min.css">

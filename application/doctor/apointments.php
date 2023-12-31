@@ -1,4 +1,8 @@
 <?php
+include '../include/session.php';
+include_once "../include/permission.auth.php";
+
+Permission::checkAuthPermissionSource("doctor");
 include '../include/links.php';
 include '../include/header.php';
 include '../include/sidebar.php';
@@ -585,7 +589,10 @@ include '../include/footer.php';
                     </tbody>
                 </table>
                 <div class="my-1">
-                    <strong>Card Price : </strong><span>$10</span>
+                    <strong>Card Price : </strong><span>$${res.data[0].card_price}</span>
+                </div>
+                <div class="my-1">
+                    <strong>Duration : </strong><span>${res.data[0].duration}m</span>
                 </div>
                 <div class="my-1">
                     <strong>Confirmation Status: </strong><span class='state'>${res.data[0].status}</span>
@@ -739,37 +746,43 @@ include '../include/footer.php';
                         return;
                     }
                     data.forEach(value => {
-                        tr += `<td>${value.appo_id}</td>`
-                        tr += `<td>${value.appo_date}</td>`
-                        // tr += `<td>${value.time}</td>`
-                        tr += `<td>${value.diagnose}</td>`
-                        tr += `<td>${value.patient}</td>`
-                        if (value.status.toLowerCase() == "pending")
-                            tr += `<td>
+                            tr += `<td>${value.appo_id}</td>`
+                            tr += `<td>${value.appo_date}</td>`
+                            // tr += `<td>${value.time}</td>`
+                            tr += `<td>${value.diagnose}</td>`
+                            tr += `<td>${value.patient}</td>`
+                            if (value.status.toLowerCase() == "pending")
+                                tr += `<td>
                         
                             <a class='btn btn-danger text-light confirm' statusID='${value.appo_id}'>${value.status}</a>
                             </td>`
-                        else if (value.status.toLowerCase() == "completed")
-                            tr += `<td >
+                            else if (value.status.toLowerCase() == "completed")
+                                tr += `<td >
                          <a class='btn btn-success text-light confirm' statusID='${value.appo_id}'>${value.status}</a>
                             </td>`
-                        else if (value.status.toLowerCase() == "inprogress")
-                            tr += `<td>
+                            else if (value.status.toLowerCase() == "inprogress")
+                                tr += `<td>
                          <a class='btn btn-warning confirm' statusID='${value.appo_id}'>${value.status}</a></td>`
-                        else
-                            tr += `<td>
+                            else
+                                tr += `<td>
                         
                             <a class='btn btn-danger text-light confirm' statusID='${value.appo_id}'>${value.status}</a>
                             </td>`
-                        tr += `<td>
-                     <a class='btn btn-danger text-light deleteAppointment' delID=${value.appo_id}><i class="fa-solid fa-rotate-left"></i></a>
+                            tr += `<td>
+                    
                      <a class="btn btn-primary viewAppo text-light" viewID=${value.appo_id}><i class="fa-solid fa-eye"></i></a>
                      </td>`
 
 
-                        tr += '</tr>'
-                    })
-                    $(".table tbody").html(tr);
+                            tr += '</tr>'
+                        })
+                    //      <
+                    //     a class = 'btn btn-danger text-light deleteAppointment'
+                    // delID = $ {
+                    //         value.appo_id
+                    //     } > < i class = "fa-solid fa-rotate-left" > < /i></a >
+
+                        $(".table tbody").html(tr);
                     $(".table").DataTable();
 
                     console.log("data is ", data)

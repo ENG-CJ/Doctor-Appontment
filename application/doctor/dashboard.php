@@ -1,4 +1,8 @@
 <?php
+include '../include/session.php';
+include_once "../include/permission.auth.php";
+
+Permission::checkAuthPermissionSource("doctor");
 include '../include/links.php';
 include '../include/header.php';
 include '../include/sidebar.php';
@@ -84,10 +88,10 @@ include '../include/sidebar.php';
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
-                                   
+
                                     <th scope="col">Date</th>
                                     <th scope="col">Status</th>
-                                   
+
 
                                 </tr>
                             </thead>
@@ -96,6 +100,23 @@ include '../include/sidebar.php';
 
                             </tbody>
                         </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Visualizations</h5>
+                    </div>
+                    <div class="card-body body-dash">
+                        <div class="row">
+                            <div class="col-6" id="chart_div">
+
+                            </div>
+                            <div class="col-6" id="diagnoses">
+
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -123,6 +144,78 @@ include '../include/footer.php';
 
 <script>
     $(document).ready(() => {
+        google.charts.load('current', {
+            'packages': ['corechart']
+        });
+
+        google.charts.setOnLoadCallback(drawChart);
+        google.charts.setOnLoadCallback(drawAnotherChart);
+
+        function drawChart() {
+
+            // Create the data table.
+            var data = new google.visualization.DataTable();
+            data.addColumn('string', 'Review');
+            data.addColumn('number', 'Number Of Reviews');
+            getReviewNumber(res => {
+                res.data.forEach(value => {
+                    console.log("all ", `[${value.review}, ${value.number}]`)
+                    data.addRows([
+                        [`${value.review}`, Number(value.number)]
+                    ]);
+                })
+
+
+                console.log("review", res.data)
+                // Set chart options
+                var options = {
+                    'title': 'Here is number of reviews from your appointments',
+                    'width': 900,
+                    'height': 540,
+                    is3D: true,
+                };
+
+                // Instantiate and draw our chart, passing in some options.
+                var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+                chart.draw(data, options);
+            })
+
+
+        }
+
+        function drawAnotherChart() {
+
+            // Create the data table.
+            var data = new google.visualization.DataTable();
+            data.addColumn('string', 'Review');
+            data.addColumn('number', 'Number Of Reviews');
+            getDiagnosesNumber(res => {
+                res.data.forEach(value => {
+                    console.log("all ", `[${value.review}, ${value.number}]`)
+                    data.addRows([
+                        [`${value.name}`, Number(value.number)]
+                    ]);
+                })
+
+
+                console.log("review", res.data)
+                // Set chart options
+                var options = {
+                    'title': 'The most symptoms for your appointments',
+                    'width': 900,
+                    'height': 540,
+                    is3D: true,
+                };
+
+                // Instantiate and draw our chart, passing in some options.
+                var chart = new google.visualization.PieChart(document.getElementById('diagnoses'));
+                chart.draw(data, options);
+            })
+
+
+        }
+
+
 
         const countRowNumbers = (tableName, label, options) => {
             $.ajax({
@@ -132,13 +225,49 @@ include '../include/footer.php';
                 data: {
                     action: "countDashboardNumbers",
                     table: tableName,
-                    id: 4,
+
                     status: options.status,
                     getStatus: options.getStatus
                 },
                 success: (res) => {
                     console.log(res)
                     label.text(res.rowNumber);
+                },
+                error: (res) => {
+                    console.log(res)
+                    // displayToast("Internal Server Error Ocurred 🤷‍♂😢️", "error", 2000);
+                }
+            })
+        }
+
+        function getReviewNumber(response) {
+            $.ajax({
+                method: "POST",
+                dataType: "JSON",
+                url: "../Api/counters.api.php",
+                data: {
+                    action: "countReviews",
+                },
+                success: (res) => {
+                    response(res)
+                },
+                error: (res) => {
+                    console.log(res)
+                    // displayToast("Internal Server Error Ocurred 🤷‍♂😢️", "error", 2000);
+                }
+            })
+        }
+
+        function getDiagnosesNumber(response) {
+            $.ajax({
+                method: "POST",
+                dataType: "JSON",
+                url: "../Api/counters.api.php",
+                data: {
+                    action: "countDiagnoseVisual",
+                },
+                success: (res) => {
+                    response(res)
                 },
                 error: (res) => {
                     console.log(res)
@@ -153,15 +282,13 @@ include '../include/footer.php';
                 url: "../Api/appointments.api.php",
                 data: {
                     action: "activeAppointments",
-
-                    id: 4,
                 },
                 success: (res) => {
                     if (res.data.length > 0) {
                         var tr = '<tr>'
                         res.data.forEach(value => {
-                            tr+=`<td>${value.Date}</td>`
-                            tr+=`<td>${value.status}</td>`
+                            tr += `<td>${value.Date}</td>`
+                            tr += `<td>${value.status}</td>`
 
                             tr += '</tr>';
                         })

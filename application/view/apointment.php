@@ -1,5 +1,8 @@
 <?php
 include_once '../include/session.php';
+include_once "../include/permission.auth.php";
+
+Permission::checkAuthPermissionSource("admin");
 include '../include/links.php';
 include '../include/header.php';
 include '../include/sidebar.php';
@@ -781,7 +784,8 @@ include '../include/footer.php';
             readPrintableData(id, (res) => {
                 $('.body-content').html(`
                 
-                 <img src="http://localhost/Doctor-Appontment/application/uploads/logo.png" alt="" class="image-fluid w-100">
+                                         <img src="http://localhost/Doctor-Appontment/application/uploads/logo_2.png" alt="" class="img-fluid" style='height: 260px; width: 100%;'>
+
                 <br>
                 <br>
                 <br>

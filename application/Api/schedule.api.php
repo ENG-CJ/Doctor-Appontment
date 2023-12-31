@@ -79,6 +79,8 @@ WHERE schedules.date='$date' AND schedules.dr_id='$dr_id' AND schedules.availabl
         extract($_POST);
         $res = array();
         $data = array();
+        session_start();
+        $id=$_SESSION['user_id'];
         $sql = "SELECT * FROM `schedules`
                 INNER JOIN doctors
                 ON schedules.dr_id=doctors.dr_id
@@ -105,6 +107,8 @@ WHERE schedules.date='$date' AND schedules.dr_id='$dr_id' AND schedules.availabl
         extract($_POST);
         $res = array();
         $data = array();
+        session_start();
+        $dr=$_SESSION['user_id'];
         $sql = "SELECT * FROM `schedules`
                
                 where schedules.dr_id='$dr' and date='$date'
@@ -176,6 +180,8 @@ WHERE schedules.date='$date' AND schedules.dr_id='$dr_id' AND schedules.availabl
         extract($_POST);
         $res = array();
         $data = array();
+        session_start();
+        $dr_id = $_SESSION['user_id'];
         $sql = "INSERT INTO `schedules`(`date`, `from_time`, `to_time`, `range_number`, `available`,`duration`,`card_price`, `dr_id`) VALUES ('$date','$fromTime','$toTime','$range','$available','$duration','$price','$dr_id')";
         if (!$conn)
             $res = array("error" => "there is an error");

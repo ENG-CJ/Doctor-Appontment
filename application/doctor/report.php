@@ -1,4 +1,8 @@
 <?php
+include_once "../include/session.php";
+include_once "../include/permission.auth.php";
+
+Permission::checkAuthPermissionSource("doctor");
 include '../include/links.php';
 include '../include/header.php';
 include '../include/sidebar.php';
@@ -34,8 +38,7 @@ h
                         <label for="">Filter By Date</label>
                         <select name="" id="" class="form-select date">
                             <option value="">Select</option>
-                            <option value="2023-12-08">2023-12-08</option>
-                            <option value="2023-12-09">2023-12-09</option>
+
                         </select>
                     </div>
                     <div class="col-6">
@@ -57,16 +60,22 @@ h
         <div class="row">
             <div class="col-xl-12">
                 <div class="card">
-                    <div class="card-header">
+                    <div class="card-header d-flex justify-content-between">
                         <h5>Lists</h5>
-                        <button id="addNew" data-toggle="modal" data-target="#exampleModal" class="btn btn-dark float-right print">
-                            <i class="fa-solid fa-print"></i>
+                        <div>
+                            <button id="addNew" data-toggle="modal" data-target="#exampleModal" class="btn btn-dark float-right print">
+                                <i class="fa-solid fa-print"></i>
 
-                            Print</button>
+                                Print</button>
+                            <button id="addNew" data-toggle="modal" data-target="#exampleModal" class="btn btn-dark float-right refresh mr-2">
+                                <i class="fa-solid fa-arrow-rotate-right"></i>
+
+                                Refresh</button>
+                        </div>
                     </div>
                     <div class="card-block table-border-style p-3">
                         <div class="report-area">
-                            <img src="http://localhost/Doctor-Appontment/application/images/doctor-logo.png" alt="" class="img-fluid w-100 mb-3">
+                            <img src="http://localhost/Doctor-Appontment/application/uploads/logo_2.png" alt="" class="img-fluid mb-3" style='height: 260px; width: 100%'>
                             <div class="table-responsive list_appointments">
 
                                 <table class="table">
@@ -276,7 +285,7 @@ include '../include/footer.php';
                 dataType: "JSON",
                 url: "../Api/report.api.php",
                 data: {
-                    dr: 4,
+
                     type: filterType,
                     status: filters[0][0],
                     date: filters[0][1],
@@ -325,13 +334,45 @@ include '../include/footer.php';
                 $('.report-area').printThis();
         })
 
+        const readAppointmentDates = () => {
+            $.ajax({
+                method: "POST",
+                dataType: "JSON",
+                url: "../Api/appointments.api.php",
+                data: {
+
+                    action: "readOnlyDates"
+                },
+                success: (res) => {
+                    var tr = "<tr>"
+                    var {
+                        data
+                    } = res;
+                    var option = "<option value=''>Select</option>"
+                    if (data.length == 0) {
+                        $(".date").html(option);
+                        return;
+                    }
+                    data.forEach(value => {
+                        option += `<option value='${value.date}'>${value.date}</option>`
+                    })
+                    $(".date").html(option);
+                },
+                error: (res) => {
+                    console.log(res)
+                    // displayToast("Internal Server Error Ocurred 🤷‍♂😢️", "error", 2000);
+                }
+            })
+        }
+        readAppointmentDates();
+
         const readData = () => {
             $.ajax({
                 method: "POST",
                 dataType: "JSON",
                 url: "../Api/report.api.php",
                 data: {
-                    dr_id: 4,
+
                     action: "readReportData"
                 },
                 success: (res) => {
@@ -350,6 +391,13 @@ include '../include/footer.php';
         }
         readData()
 
+        $(".refresh").click(() => {
+            $(".date").val("")
+            $(".status").val("")
+
+            readData()
+        })
+
         function displayData(data) {
             if (data.length == 0) {
                 $('.list_appointments').html(`
@@ -362,7 +410,7 @@ include '../include/footer.php';
             }
             var tr = "<tr>"
             var drName = '';
-            var profile = 'http://localhost/Doctor-Appontment/application/images/'
+            var profile = 'http://localhost/Doctor-Appontment/application/uploads/'
             $('.table tbody').html('')
             data.forEach(value => {
                 tr += `<td>${value.appo_id}</td>`

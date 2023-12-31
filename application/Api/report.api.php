@@ -10,6 +10,8 @@ class Report extends DatabaseConnection
     {
         extract($_POST);
         $res = array();
+        session_start();
+        $dr_id=$_SESSION['user_id'];
         $data=array();
         $sql = "CALL readReportData('$dr_id')";
         if (!$conn)
@@ -33,6 +35,8 @@ class Report extends DatabaseConnection
         extract($_POST);
         $res = array();
         $data=array();
+        session_start();
+        $dr=$_SESSION['user_id'];
         $sql = "CALL filterReportData('$date','$status','$type','$dr')";
         if (!$conn)
             $res = array("error" => "there is an error");

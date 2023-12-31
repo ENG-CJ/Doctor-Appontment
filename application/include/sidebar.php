@@ -19,7 +19,7 @@ if ($res) {
 
 // if its admin
 if ($_SESSION['type'] == "admin") {
-        ?>
+?>
         <div class="quixnav">
                 <div class="quixnav-scroll">
                         <ul class="metismenu" id="menu">
@@ -37,29 +37,24 @@ if ($_SESSION['type'] == "admin") {
 
                                 </li>
                                 <li><a href="../view/hospital.php" aria-expanded="false">
-                                                <i class="fa-solid fa-hospital"></i></i><span
-                                                        class="nav-text">Hospitals</span></a>
+                                                <i class="fa-solid fa-hospital"></i></i><span class="nav-text">Hospitals</span></a>
                                 </li>
                                 <li><a href="../view/patient.php" aria-expanded="false">
-                                                <i class="fa-solid fa-suitcase-medical"></i><span
-                                                        class="nav-text">Patients</span></a>
+                                                <i class="fa-solid fa-suitcase-medical"></i><span class="nav-text">Patients</span></a>
 
                                 </li>
                                 <li><a href="../view/profision.php" aria-expanded="false">
                                                 <i class="fa-solid fa-user-tie"></i><span class="nav-text">Profession</span></a>
 
                                 </li>
-                                <li><a href="../view/schedule.php" aria-expanded="false"><i
-                                                        class="fa-solid fa-calendar-days"></i><span
-                                                        class="nav-text">Schedule</span></a>
+                                <li><a href="../view/schedule.php" aria-expanded="false"><i class="fa-solid fa-calendar-days"></i><span class="nav-text">Schedule</span></a>
                                 </li>
                                 <li><a href="../view/diagnose.php" aria-expanded="false">
                                                 <i class="fa-solid fa-capsules"></i><span class="nav-text">Diagnose</span></a>
 
                                 </li>
                                 <li><a href="../view/apointment.php" aria-expanded="false">
-                                                <i class="fa-solid fa-calendar-check"></i><span
-                                                        class="nav-text">Appointment</span></a>
+                                                <i class="fa-solid fa-calendar-check"></i><span class="nav-text">Appointment</span></a>
                                 </li>
 
                         </ul>
@@ -77,7 +72,7 @@ if ($_SESSION['type'] == "admin") {
                                                 <i class="fa-solid fa-star"></i><span class="nav-text">Reviews</span></a>
 
                                 </li>
-                                <li><a href="../view/dashboard.php" aria-expanded="false">
+                                <li><a href="../view/profile.php" aria-expanded="false">
                                                 <i class="fa-solid fa-user"></i><span class="nav-text">Profile</span></a>
 
                                 </li>
@@ -91,92 +86,94 @@ if ($_SESSION['type'] == "admin") {
         </div>
 
 
-        <?php
+<?php
 
 } else if ($_SESSION['type'] == "doctor") {
-        ?>
-                <div class="quixnav">
-                        <div class="quixnav-scroll">
-                                <ul class="metismenu" id="menu">
-                                        <li class="nav-label first text-light">Doctor</li>
-                                        <li><a href="../view/dashboard.php" aria-expanded="false">
-                                                        <i class="fa-solid fa-gauge"></i><span class="nav-text">Dashboard</span></a>
+?>
+        <div class="quixnav">
+                <div class="quixnav-scroll">
+                        <ul class="metismenu" id="menu">
+                                <li class="nav-label first text-light">Doctor</li>
+                                <li><a href="../doctor/dashboard.php" aria-expanded="false">
+                                                <i class="fa-solid fa-gauge"></i><span class="nav-text">Dashboard</span></a>
 
-                                        </li>
-
-                                        <li><a href="../doctor/dr_patients.php" aria-expanded="false">
-                                                        <i class="fa-solid fa-user-doctor"></i><span
-                                                                class="nav-text">Patients</span></a>
-                                        </li>
-
-                                        <li><a href="../doctor/schedule.php" aria-expanded="false"><i
-                                                                class="fa-solid fa-calendar-days"></i><span
-                                                                class="nav-text">Schedule</span></a>
-                                        </li>
-                                        <li><a href="../doctor/dr_appointments.php" aria-expanded="false">
-                                                        <i class="fa-solid fa-calendar-check"></i><span
-                                                                class="nav-text">Appointments</span></a>
-                                        </li>
-                                        <li><a href="../doctor/dr_appointments.php" aria-expanded="false">
-                                                        <i class="fa-solid fa-calendar-check"></i><span
-                                                                class="nav-text">Reports</span></a>
-                                        </li>
-
-                                </ul>
-                        </div>
+                                </li>
 
 
+
+
+                                <li><a href="../doctor/apointments.php" aria-expanded="false">
+                                                <i class="fa-solid fa-calendar-check"></i><span class="nav-text">Appointments</span></a>
+                                </li>
+                                <li><a href="../doctor/schedule.php" aria-expanded="false"><i class="fa-solid fa-calendar-days"></i><span class="nav-text">Schedule</span></a>
+                                </li>
+                                <li><a href="../doctor/reminders.php" aria-expanded="false">
+                                                <i class="fa-solid fa-bell"></i><span class="nav-text">Reminder</span></a>
+
+                                </li>
+                                <li><a href="../doctor/reviews.doctors.php" aria-expanded="false">
+                                                <i class="fa-solid fa-star"></i><span class="nav-text">Reviews</span></a>
+
+                                </li>
+                                <li><a href="../doctor/report.php" aria-expanded="false">
+                                                <i class="fa-solid fa-calendar-check"></i><span class="nav-text">Reports</span></a>
+                                </li>
+
+                        </ul>
                 </div>
-        <?php
+
+
+        </div>
+<?php
 
 } else if ($_SESSION['type'] == "patient") {
-        ?>
-                        <div class="quixnav">
-                                <div class="quixnav-scroll">
-                                        <ul class="metismenu" id="menu">
-                                                <li class="nav-label first text-light">Patient</li>
-                                                <li><a href="../patient/active_doctors.php" aria-expanded="false">
-                                                                <i class="fa-solid fa-user-doctor"></i><span class="nav-text">Doctors</span></a>
-                                                </li>
-                                                <li><a href="../patient/apointment.php" aria-expanded="false">
-                                                                <i class="fa-solid fa-calendar-check"></i><span class="nav-text">My
-                                                                        Appointments</span></a>
-                                                </li>
+?>
+        <div class="quixnav">
+                <div class="quixnav-scroll">
+                        <ul class="metismenu" id="menu">
+                                <li class="nav-label first text-light">Patient</li>
+                                <li><a href="../patient/active_doctors.php" aria-expanded="false">
+                                                <i class="fa-solid fa-user-doctor"></i><span class="nav-text">Doctors</span></a>
+                                </li>
+                                <li><a href="../patient/apointment.php" aria-expanded="false">
+                                                <i class="fa-solid fa-calendar-check"></i><span class="nav-text">My
+                                                        Appointments</span></a>
+                                </li>
 
-                                        </ul>
-                                        <ul class="metismenu" id="menu">
-                                                <li class="nav-label first text-light">other Settings</li>
-                                                <li><a href="../view/dashboard.php" aria-expanded="false">
-                                                                <i class="fa-solid fa-gauge"></i><span class="nav-text">My Profile</span></a>
-                                                </li>
-                                                <li><a href="../patient/reminders.php" aria-expanded="false">
-                                                        <?php
-                                                        if ($data['count'] == 0) {
-                                                                ?>
-                                                                        <i class="fa-solid fa-bell"></i><span class="nav-text">My Reminders</span>
-                                                                </a>
+                        </ul>
+                        <ul class="metismenu" id="menu">
+                                <li class="nav-label first text-light">other Settings</li>
+                                <li><a href="../view/dashboard.php" aria-expanded="false">
+                                                <i class="fa-solid fa-gauge"></i><span class="nav-text">My Profile</span></a>
+                                </li>
+                                <li><a href="../patient/reminders.php" aria-expanded="false">
                                                 <?php
-                                                        } else {
-                                                                ?>
-                                                                <i class="fa-solid fa-bell"></i><span class="nav-text">My Reminders &nbsp;
-                                                        <?php echo $data['count'] ?>
-                                                                </span></a>
-                                                <?php
-                                                        }
+                                                if ($data['count'] == 0) {
+                                                ?>
+                                                        <i class="fa-solid fa-bell"></i><span class="nav-text">My Reminders</span>
+                                        </a>
+                                <?php
+                                                } else {
+                                ?>
+                                        <i class="fa-solid fa-bell"></i><span class="nav-text">My Reminders &nbsp;
+                                                <?php echo $data['count'] ?>
+                                        </span></a>
+                                <?php
+                                                }
 
 
-                                                        ?>
-                                                        <!-- <i class="fa-solid fa-bell"></i><span class="nav-text">My Reminders</span></a> -->
-                                                </li>
+                                ?>
+                                <!-- <i class="fa-solid fa-bell"></i><span class="nav-text">My Reminders</span></a> -->
+                                </li>
 
 
 
-                                        </ul>
-                                </div>
+                        </ul>
+                </div>
 
 
-                        </div>
-        <?php
+        </div>
+<?php
 
 } else {
         header("location: ../index.php");

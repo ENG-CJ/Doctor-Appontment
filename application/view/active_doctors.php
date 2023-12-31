@@ -1,5 +1,9 @@
 <?php
 include_once "../include/session.php";
+include_once "../include/permission.auth.php";
+
+Permission::checkAuthPermissionSource("admin");
+
 include '../include/links.php';
 include '../include/header.php';
 include '../include/sidebar.php';

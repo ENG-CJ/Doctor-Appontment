@@ -1,5 +1,8 @@
 <?php
 include_once "../include/session.php";
+include_once "../include/permission.auth.php";
+
+Permission::checkAuthPermissionSource("admin");
 include '../include/links.php';
 include '../include/header.php';
 include '../include/sidebar.php';
@@ -184,6 +187,31 @@ include '../include/footer.php';
 <script>
     $(document).ready(() => {
 
+        $(".patients").change(() => {
+            if ($(".patients").val() == "")
+                return;
+
+            fetchAndFill($(".patients").val(), res => {
+                var {
+                    data,
+                    hasData
+                } = res;
+                var option = "<option value=''>Select</option>"
+                if (hasData) {
+                    $(".appointment_id").attr("disabled", false);
+                    data.forEach(value => {
+                        option += `<option value='${value.appo_id}'>${value.appo_date}</option>`;
+                    })
+                    $(".appointment_id").html(option);
+                } else {
+                    var option = "<option value=''>No active Appointments For the selected patient</option>"
+                    $(".appointment_id").attr("disabled", true);
+                    $(".appointment_id").html(option);
+                }
+            });
+
+        })
+
         var canSend = false;
         $('.sendEmail').on("change", (e) => {
             canSend = e.target.checked;
@@ -191,6 +219,11 @@ include '../include/footer.php';
         })
 
         $(".add").click(function() {
+            $(".appointment_id").attr("disabled", false);
+
+            option = `<option value=''>Select</option>`;
+
+            $(".appointment_id").html(option);
             $(".sendEmail").prop("disabled", false);
             $(".sendEmail").prop("checked", false);
             $(".reminder-modal").modal("show")
@@ -224,6 +257,49 @@ include '../include/footer.php';
 
             })
         }
+
+        function fetchAndFill(id, response) {
+            $.ajax({
+                method: "POST",
+                dataType: "JSON",
+                data: {
+                    "action": "readPatientAppointmentData",
+                    id: id
+                },
+                url: "../Api/appointments.api.php",
+                beforeSend: () => {
+                    $(".appointment_id").attr("disabled", false);
+                    var option = "<option value=''>Fetching..</option>"
+                    $(".appointment_id").html(option);
+                },
+                success: (res) => {
+                    response(res)
+                },
+                error: (err) => {
+                    console.log(err)
+                }
+
+            })
+        }
+        const validateReminderWithAppointment = (patient, appointment, response) => {
+            $.ajax({
+                method: "POST",
+                dataType: "JSON",
+                data: {
+                    "action": "validateReminderWithAppointment",
+                    pat_id: patient,
+                    appo_id: appointment,
+                },
+                url: "../Api/appointments.api.php",
+                success: (res) => {
+                    response(res)
+                },
+                error: (err) => {
+                    console.log(err)
+                }
+
+            })
+        }
         readSelections("patients", (response) => {
             var {
                 data,
@@ -244,26 +320,26 @@ include '../include/footer.php';
 
 
         })
-        readSelections("appointment", (response) => {
-            var {
-                data,
-                hasData
-            } = response;
-            var option = "<option value=''>Select</option>"
-            if (hasData) {
-                $(".appointment_id").attr("disabled", false);
-                data.forEach(value => {
-                    option += `<option value='${value.appo_id}'>${value.appo_date}</option>`;
-                })
-                $(".appointment_id").html(option);
-            } else {
-                var option = "<option value=''>No active Appointments</option>"
-                $(".appointment_id").attr("disabled", true);
-                $(".appointment_id").html(option);
-            }
+        // readSelections("appointment", (response) => {
+        //     var {
+        //         data,
+        //         hasData
+        //     } = response;
+        //     var option = "<option value=''>Select</option>"
+        //     if (hasData) {
+        //         $(".appointment_id").attr("disabled", false);
+        //         data.forEach(value => {
+        //             option += `<option value='${value.appo_id}'>${value.appo_date}</option>`;
+        //         })
+        //         $(".appointment_id").html(option);
+        //     } else {
+        //         var option = "<option value=''>No active Appointments</option>"
+        //         $(".appointment_id").attr("disabled", true);
+        //         $(".appointment_id").html(option);
+        //     }
 
 
-        })
+        // })
 
         const readReminders = () => {
             $.ajax({
@@ -334,6 +410,9 @@ include '../include/footer.php';
                 }
             })
         }
+        const isNotValidReminderMethod = (value) => {
+            return value.toLowerCase() == "call" || value.toLowerCase() == "none" || value.toLowerCase() == "email"
+        }
 
 
         $(".configure").click(() => {
@@ -344,113 +423,147 @@ include '../include/footer.php';
             }
 
             if ($(".configure").text().toLowerCase() == "configure") {
-                // email sending checker
-                if (canSend) {
-                    var data = {
-                        "title": $(".title").val(),
-                        "message": $(".message").val(),
-                        user_id: $(".patients").val(),
-                        action: "sendEmailPatch"
-                    }
-                    $.ajax({
-                        method: "POST",
-                        dataType: "JSON",
-                        data: data,
-                        url: "../Api/appointments.api.php",
-                        beforeSend: () => {
-                            $(".configure").attr("disabled", true);
-                        },
-                        success: (res) => {
-                            $(".configure").attr("disabled", false);
-                            if (res.error != "") {
-                                displayToast(res.error, "error", 4000);
-                                return;
-                            }
-                            displayToast("Email Was Sent To the Selected Patient", "success", 4000);
-                            $('.reminder-modal').modal("hide");
-                            readReminders();
-                        },
-                        error: (res) => {
-                            $(".configure").attr("disabled", false);
-                            displayToast(res.responseText, "error", 5000);
-                            console.log(res)
-                        }
-                    })
+                // check matching validation
+                validateReminderWithAppointment($(".patients").val(), $(".appointment_id").val(), res => {
 
-                } else {
-                    var data = {
-                        "title": $(".title").val(),
-                        "message": $(".message").val(),
-                        appo_id: $(".appointment_id").val(),
-                        user_id: $(".patients").val(),
-                        action: "configureReminder"
-                    }
-                    findSpecificReminder({
-                        user_id: $(".patients").val(),
-                        appo_id: $(".appointment_id").val(),
-                        action: "findReminderData"
-                    }, res => {
-                        $(".configure").attr("disabled", false);
-                        if (res.hasData) {
-                            displayToast("Reminder with this appointment and patient has already created", "error", 4000);
+                    if (res.hasData) {
+
+                        // reminder method checker
+                        var isNotValidMethod = isNotValidReminderMethod(res.data[0].reminder);
+                        if (isNotValidMethod) {
+                            swal("Configuration Error", "Configuring the reminder method is unavailable for [call, none and email].To call the patient, simply view the mobile number.To send an email, tick the box provided below.",
+                                "error");
                             return;
                         }
-                        $.ajax({
-                            method: "POST",
-                            dataType: "JSON",
-                            data: data,
-                            url: "../Api/appointments.api.php",
-                            beforeSend: () => {
-                                $(".configure").attr("disabled", true);
-                            },
-                            success: (res) => {
-                                $(".configure").attr("disabled", false);
-                                displayToast("Reminder Configured", "success", 4000);
-                                $('.reminder-modal').modal("hide");
-                                readReminders();
-                            },
-                            error: (res) => {
-                                $(".configure").attr("disabled", false);
-                                displayToast(res.responseText, "error", 5000);
-                                console.log(res)
+                        // email sending checker
+                        if (canSend) {
+                            var data = {
+                                "title": $(".title").val(),
+                                "message": $(".message").val(),
+                                user_id: $(".patients").val(),
+                                action: "sendEmailPatch"
                             }
-                        })
-                    })
-                }
+                            $.ajax({
+                                method: "POST",
+                                dataType: "JSON",
+                                data: data,
+                                url: "../Api/appointments.api.php",
+                                beforeSend: () => {
+                                    $(".configure").attr("disabled", true);
+                                },
+                                success: (res) => {
+                                    $(".configure").attr("disabled", false);
+                                    if (res.error != "") {
+                                        displayToast(res.error, "error", 4000);
+                                        return;
+                                    }
+                                    displayToast("Email Was Sent To the Selected Patient", "success", 4000);
+                                    $('.reminder-modal').modal("hide");
+                                    readReminders();
+                                },
+                                error: (res) => {
+                                    $(".configure").attr("disabled", false);
+                                    displayToast(res.responseText, "error", 5000);
+                                    console.log(res)
+                                }
+                            })
 
+                        } else {
+                            var data = {
+                                "title": $(".title").val(),
+                                "message": $(".message").val(),
+                                appo_id: $(".appointment_id").val(),
+                                user_id: $(".patients").val(),
+                                action: "configureReminder"
+                            }
+                            findSpecificReminder({
+                                user_id: $(".patients").val(),
+                                appo_id: $(".appointment_id").val(),
+                                action: "findReminderData"
+                            }, res => {
+                                $(".configure").attr("disabled", false);
+                                if (res.hasData) {
+                                    displayToast("Reminder with this appointment and patient has already created", "error", 4000);
+                                    return;
+                                }
+                                $.ajax({
+                                    method: "POST",
+                                    dataType: "JSON",
+                                    data: data,
+                                    url: "../Api/appointments.api.php",
+                                    beforeSend: () => {
+                                        $(".configure").attr("disabled", true);
+                                    },
+                                    success: (res) => {
+                                        $(".configure").attr("disabled", false);
+                                        displayToast("Reminder Configured", "success", 4000);
+                                        $('.reminder-modal').modal("hide");
+                                        readReminders();
+                                    },
+                                    error: (res) => {
+                                        $(".configure").attr("disabled", false);
+                                        displayToast(res.responseText, "error", 5000);
+                                        console.log(res)
+                                    }
+                                })
+                            })
+                        }
 
-
-
+                    } else {
+                        swal("Matching Error", "There are no appointments scheduled for the chosen date or the specific appointment for this patient.", "error");
+                    }
+                })
 
 
             } else {
-                var data = {
-                    "title": $(".title").val(),
-                    "message": $(".message").val(),
-                    appo_id: $(".appointment_id").val(),
-                    user_id: $(".patients").val(),
-                    action: "updateReminder"
-                }
-                $.ajax({
-                    method: "POST",
-                    dataType: "JSON",
-                    data: data,
-                    url: "../Api/appointments.api.php",
-                    beforeSend: () => {
-                        $(".configure").attr("disabled", true);
-                    },
-                    success: (res) => {
-                        $(".configure").attr("disabled", false);
-                        displayToast("Reminder Updated", "success", 4000);
-                        $('.reminder-modal').modal("hide");
-                        readReminders();
-                    },
-                    error: (res) => {
-                        $(".configure").attr("disabled", false);
-                        displayToast(res.responseText, "error", 5000);
-                        console.log(res)
+                // validating matching parameters
+                validateReminderWithAppointment($(".patients").val(), $(".appointment_id").val(), res => {
+                    if (res.hasData) {
+                        // if it has data (matching coorect)
+                        var isNotValidMethod = isNotValidReminderMethod(res.data[0].reminder);
+                        if (isNotValidMethod) {
+                            // if it has not valid eminder method
+                            swal("Configuration Error", "Configuring the reminder method is unavailable for [call, none and email].To call the patient, simply view the mobile number.To send an email, tick the box provided below.",
+                                "error");
+                            return;
+                        } else {
+                            //if it has valid
+                            // updation process
+                            var data = {
+                                "title": $(".title").val(),
+                                "message": $(".message").val(),
+                                appo_id: $(".appointment_id").val(),
+                                user_id: $(".patients").val(),
+                                action: "updateReminder"
+                            }
+                            $.ajax({
+                                method: "POST",
+                                dataType: "JSON",
+                                data: data,
+                                url: "../Api/appointments.api.php",
+                                beforeSend: () => {
+                                    $(".configure").attr("disabled", true);
+                                },
+                                success: (res) => {
+                                    $(".configure").attr("disabled", false);
+                                    displayToast("Reminder Updated", "success", 4000);
+                                    $('.reminder-modal').modal("hide");
+                                    readReminders();
+                                },
+                                error: (res) => {
+                                    $(".configure").attr("disabled", false);
+                                    displayToast(res.responseText, "error", 5000);
+                                    console.log(res)
+                                }
+                            })
+                        }
+
+                    } else {
+                        swal("Matching Error", "There are no appointments scheduled for the chosen date or the specific appointment for this patient.", "error");
                     }
+
                 })
+
 
             }
         })
@@ -465,17 +578,53 @@ include '../include/footer.php';
                     id: id
                 },
                 url: "../Api/appointments.api.php",
-                success: (res) => {
-                    $(".sendEmail").attr("disabled", true);
-                    $(".sendEmail").prop("checked", false);
-                    console.log(res)
-                    $('.patients').val(res.data[0].user)
-                    $('.appointment_id').val(res.data[0].appo_id)
-                    $('.title').val(res.data[0].title)
-                    $('.message').val(res.data[0].message)
-                    $('.id').val(res.data[0].id)
-                    $('.configure').text("Edit")
-                    $(".reminder-modal").modal("show")
+                success: (main_response) => {
+                    fetchAndFill(main_response.data[0].user, res => {
+                        var {
+                            data,
+                            hasData
+                        } = res;
+                        var option = "<option value=''>Select</option>"
+                        if (hasData) {
+                            $(".appointment_id").attr("disabled", false);
+                            data.forEach(value => {
+                                option += `<option value='${value.appo_id}'>${value.appo_date}</option>`;
+                            })
+                            $(".appointment_id").html(option);
+
+                            // run other things
+                            $(".sendEmail").attr("disabled", true);
+                            $(".sendEmail").prop("checked", false);
+                            // console.log(res)
+                            $('.patients').val(main_response.data[0].user)
+                            $('.appointment_id').val(main_response.data[0].appo_id)
+                            $('.title').val(main_response.data[0].title)
+                            $('.message').val(main_response.data[0].message)
+                            $('.id').val(main_response.data[0].id)
+                            $('.configure').text("Edit")
+                            $(".reminder-modal").modal("show")
+
+
+                        } else {
+                            var option = "<option value=''>No active Appointments For the selected patient</option>"
+                            $(".appointment_id").attr("disabled", true);
+                            $(".appointment_id").html(option);
+                            $(".sendEmail").attr("disabled", true);
+                            $(".sendEmail").prop("checked", false);
+
+                            $('.patients').val(main_response.data[0].user)
+                            // $('.appointment_id').val(main_response.data[0].appo_id)
+                            $('.title').val(main_response.data[0].title)
+                            $('.message').val(main_response.data[0].message)
+                            $('.id').val(main_response.data[0].id)
+                            $('.configure').text("Edit")
+                            $(".reminder-modal").modal("show")
+                        }
+                    });
+
+
+
+
                 },
 
                 error: (res) => {
@@ -550,6 +699,7 @@ include '../include/footer.php';
 
         $(document).on("click", "a.editButton", function() {
             var id = $(this).attr('editID')
+
             fetchReminderData(id)
 
         })

@@ -4,7 +4,7 @@
 session_start();
 if(!isset($_SESSION['type']))
 {
-    header("location: ../index.php");
+    header("location: ../401.html");
     exit();
 }
 
