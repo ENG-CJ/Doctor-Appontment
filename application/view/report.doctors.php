@@ -20,8 +20,8 @@ include '../include/sidebar.php';
         <div class="row page-titles mx-0">
             <div class="col-sm-6 p-md-0">
                 <div class="welcome-text">
-                    <h4>List of doctors</h4>
-                    <span class="ml-1">Manage All operations</span>
+                    <h4>Doctors Report</h4>
+                    <span class="ml-1">Report Doctors, With Different formats</span>
                 </div>
             </div>
 
@@ -37,13 +37,26 @@ include '../include/sidebar.php';
                 </div>
             </div>
 
-            <div class="col-lg-6 col-md-12">
-                <div class="my-2">
-                    <button class="btn btn-success fetch-print">
-                        Fetch & Print
-                    </button>
-                </div>
+            <div class="col-lg-12 col-md-12">
+                <!-- <div class="all-btns d-flex ">
+                    <div class="my-2 mr-2">
+                        <button class="btn btn-success fetch-print">
+                            Fetch & Print
+                        </button>
+                    </div>
+                    <div class="my-2">
+                        <button class="btn btn-success toExcel">
+                            Download as Excel
+                        </button>
+                    </div>
+                    <div class="my-2 ml-2">
+                        <button class="btn btn-success toCSV">
+                            Print as CSV
+                        </button>
+                    </div>
+                </div> -->
             </div>
+
         </div>
         <!-- row -->
         <div class="container-fluid mb-2 loading-area">
@@ -60,8 +73,8 @@ include '../include/sidebar.php';
                         <!-- <button id="addNew" data-toggle="modal" data-target="#exampleModal"
                             class="btn btn-primary float-right add">Add New</button> -->
                     </div>
-                    <div class="card-block table-border-style">
-                        <img src="http://localhost/Doctor-Appontment/application/uploads/logo_2.png" alt="" class="img-fluid" style='height: 260px; width: 100%;'>
+                    <div class="card-block table-border-style p-2">
+                        <!-- <img src="http://localhost/Doctor-Appontment/application/uploads/logo_2.png" alt="" class="img-fluid" style='height: 260px; width: 100%;'> -->
                         <div class="table-responsive">
 
                             <table class="table" id="myTable">
@@ -189,21 +202,56 @@ include '../include/sidebar.php';
 
 
 <?php
+
 include '../include/footer.php';
 ?>
+
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
 <script src="../js/validations.js"></script>
+<script src="../js/utils.js"></script>
 
+<script src='../js/jquery-3.3.1.min.js'></script>
 <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
 <script src="../iziToast-master/dist/js/iziToast.js"></script>
 <script src="../iziToast-master/dist/js/iziToast.min.js"></script>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-<script src='../js/jquery-3.3.1.min.js'></script>
 <script src='../printThis.js'></script>
+
+
+
+
+<script src='https://cdn.jsdelivr.net/npm/@linways/table-to-excel@1.0.4/dist/tableToExcel.min.js'></script>
+<script src="https://cdn.jsdelivr.net/npm/table-export@1.0.2/dist/tableExport.min.js"></script>
+<script src='https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js'></script>
+<script src='https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js'></script>
+<script src='https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js'></script>
 
 <script>
     $(document).ready(function() {
+
+            $(".toExcel").click(() => {
+
+
+                // Convert table to Excel
+                TableToExcel.convert(document.getElementById("myTable"), {
+                    name: "doctors.xlsx",
+                    sheet: {
+                        name: "Sheet 1" // Sheet name
+                    }
+                });
+            })
+            $(".toCSV").click(() => {
+
+
+                // Convert table to Excel
+                TableExport(document.getElementById("myTable"), "test1", "csv");
+            })
+
+
             $(".fetch-print").click(() => {
                 $(".print-area").printThis();
             })
@@ -692,6 +740,7 @@ include '../include/footer.php';
                             data
                         } = res;
                         if (data.length == 0) {
+
                             $(
                                 '.no-data').html(`
                                 
@@ -700,13 +749,21 @@ include '../include/footer.php';
                                 </div>
                                 
                                 `)
+                            // Clear DataTables and display the error message
+                            var table = $('.table').DataTable();
+                            table.clear().draw(); // Clear the table content
+
+                            // Disable print button when there is no data
+                            $('.buttons-print').addClass('disabled'); // 
+                            $('.buttons-pdf').addClass('disabled'); // 
+                            $('.buttons-csv').addClass('disabled'); // 
                             // return;
-                        } else if (data.length != 0)
+                        } else if (data.length != 0) {
                             $(
                                 '.no-data').html("")
 
-                        displayDoctorsIntoTable(data)
-
+                            displayDoctorsIntoTable(data)
+                        }
                     },
                     error: (error) => {
                         console.log(error);
@@ -767,8 +824,30 @@ include '../include/footer.php';
 
                     tr += "</tr>";
                 });
-                $(".table tbody").html(tr);
-                $(".table").DataTable();
+
+                if ($.fn.DataTable.isDataTable('.table')) {
+                    $('.table').DataTable().destroy();
+                }
+                $('.table tbody').empty();
+                $('.table tbody').html(tr);
+
+
+                // Re-initialize DataTable
+                $('.table').DataTable({
+                    stateSave: true,
+                    dom: 'Bfrtip',
+                    buttons: [
+                        'csv', 'pdf', 'print',
+                        {
+                            extend: 'pdf',
+                            title: 'PDF REPORT',
+                            text: '<i class="fa fa-table fainfo" aria-hidden="true" ></i>',
+                            titleAttr: 'Export Excel',
+                        }
+                    ]
+                });
+
+
             }
 
             function getHospitalDataForAddingNewDoctor() {

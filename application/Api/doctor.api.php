@@ -310,8 +310,128 @@ WHERE doctors.verified='YES' AND schedules.available='yes' AND doctors.dr_id='$d
         echo json_encode($response);
     }
 
+    public  function updatePass($_conn)
+    {
+        extract($_POST);
+        $response = array();
+        session_start();
+        $id = $_SESSION['user_id'];
+
+        $sql = "UPDATE doctors set  `password`='$password'  where dr_id='$id';";
+        if (!$_conn)
+            $response = array("error" => "There is an error connection ", "status" => false);
+        else {
+            try {
+                $result = $_conn->query($sql);
+                if ($result)
+                    $response = array("message" => "Your password has been updated", "error" => "", "status" => true);
+                else
+                    $response = array("error" => "There is an error connection ", "status" => false);
+            } catch (Exception $e) {
+                $response = array(
+                    "error" => "There is an error occured while executing..",
+                    "message" => $e->getMessage(),
+                    "status" => false
+                );
+            }
+        }
+
+        echo  json_encode($response);
+    }
+    public  function deleteOne($_conn)
+    {
+        extract($_POST);
+        $response = array();
+        session_start();
+        $id = $_SESSION['user_id'];
+
+        $sql = "DELETE FROM doctors where dr_id='$id';";
+        if (!$_conn)
+            $response = array("error" => "There is an error connection ", "status" => false);
+        else {
+            try {
+                $result = $_conn->query($sql);
+                if ($result)
+                    $response = array("message" => "Your Profile Data has been updated", "error" => "", "status" => true);
+                else
+                    $response = array("error" => "There is an error connection ", "status" => false);
+            } catch (Exception $e) {
+                $response = array(
+                    "error" => "There is an error occured while executing..",
+                    "message" => $e->getMessage(),
+                    "status" => false
+                );
+            }
+        }
+
+        echo  json_encode($response);
+    }
+
+    private static function uploadImage(): string
+    {
+        $file_name = "";
+        $fileName = $_FILES['profile']['name'];
+        $extension = explode(".", $fileName)[1];
+        $tempFolder = $_FILES['profile']['tmp_name'];
+        $newName = rand() . "." . $extension;
+        $uploadPath = "../uploads/" . $newName;
+        if (move_uploaded_file($tempFolder, $uploadPath)) {
+            $file_name = $newName;
+        }
+        return $file_name;
+    }
+    public  function updateDoctorWithProfile($_conn)
+    {
+        extract($_POST);
+        $response = array();
+        session_start();
+        $uploadedFile = Doctors::uploadImage();
+        $id = $_SESSION['user_id'];
+        if ($uploadedFile != "") {
+            $sql = "UPDATE doctors set  `name`='$name',`email`='$email', mobile='$mobile', address='$address', profile_image='$uploadedFile'  where dr_id='$id';";
+            if (!$_conn)
+                $response = array("error" => "There is an error connection ", "status" => false);
+            else {
+                try {
+                    $result = $_conn->query($sql);
+                    if ($result)
+                        $response = array("message" => "Your Profile Data has been updated", "error" => "", "status" => true);
+                    else
+                        $response = array("error" => "There is an error connection ", "status" => false);
+                } catch (Exception $e) {
+                    $response = array(
+                        "error" => "There is an error occured while executing..",
+                        "message" => $e->getMessage(),
+                        "status" => false
+                    );
+                }
+            }
+        } else {
+            $sql = "UPDATE patients set  `name`='$name',`email`='$email', mobile='$mobile', address='$address', profile_image='$default_profile'  where dr_id='$id';";
+            if (!$_conn)
+                $response = array("error" => "There is an error connection ", "status" => false);
+            else {
+                try {
+                    $result = $_conn->query($sql);
+                    if ($result)
+                        $response = array("message" => "Your Profile Data has been updated", "error" => "", "status" => true);
+                    else
+                        $response = array("error" => "There is an error connection ", "status" => false);
+                } catch (Exception $e) {
+                    $response = array(
+                        "error" => "There is an error occured while executing..",
+                        "message" => $e->getMessage(),
+                        "status" => false
+                    );
+                }
+            }
+        }
 
 
+
+
+        echo  json_encode($response);
+    }
     public function fetchingOne($conn)
     {
         extract($_POST);
@@ -332,6 +452,34 @@ WHERE doctors.verified='YES' AND schedules.available='yes' AND doctors.dr_id='$d
             }
         }
         echo json_encode($res);
+    }
+    public  function updateDoctorData($_conn)
+    {
+        extract($_POST);
+        $response = array();
+        session_start();
+        $id = $_SESSION['user_id'];
+
+        $sql = "UPDATE doctors set  `name`='$name',`email`='$email', mobile='$mobile', address='$address'  where dr_id='$id';";
+        if (!$_conn)
+            $response = array("error" => "There is an error connection ", "status" => false);
+        else {
+            try {
+                $result = $_conn->query($sql);
+                if ($result)
+                    $response = array("message" => "Your Profile Data has been updated", "error" => "", "status" => true);
+                else
+                    $response = array("error" => "There is an error connection ", "status" => false);
+            } catch (Exception $e) {
+                $response = array(
+                    "error" => "There is an error occured while executing..",
+                    "message" => $e->getMessage(),
+                    "status" => false
+                );
+            }
+        }
+
+        echo  json_encode($response);
     }
 }
 $doctors = new Doctors;

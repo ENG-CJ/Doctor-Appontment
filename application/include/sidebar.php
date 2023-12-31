@@ -72,7 +72,7 @@ if ($_SESSION['type'] == "admin") {
                                                 <i class="fa-solid fa-star"></i><span class="nav-text">Reviews</span></a>
 
                                 </li>
-                                <li><a href="../view/profile.php" aria-expanded="false">
+                                <li><a href="../view/my_profile.php" aria-expanded="false">
                                                 <i class="fa-solid fa-user"></i><span class="nav-text">Profile</span></a>
 
                                 </li>
@@ -118,6 +118,9 @@ if ($_SESSION['type'] == "admin") {
                                 <li><a href="../doctor/report.php" aria-expanded="false">
                                                 <i class="fa-solid fa-calendar-check"></i><span class="nav-text">Reports</span></a>
                                 </li>
+                                <li><a href="../doctor/my_profile.php" aria-expanded="false">
+                                                <i class="fa-solid fa-user"></i><span class="nav-text">My Profile</span></a>
+                                </li>
 
                         </ul>
                 </div>
@@ -143,8 +146,8 @@ if ($_SESSION['type'] == "admin") {
                         </ul>
                         <ul class="metismenu" id="menu">
                                 <li class="nav-label first text-light">other Settings</li>
-                                <li><a href="../view/dashboard.php" aria-expanded="false">
-                                                <i class="fa-solid fa-gauge"></i><span class="nav-text">My Profile</span></a>
+                                <li><a href="../patient/my_profile.php" aria-expanded="false">
+                                                <i class="fa-solid fa-user"></i><span class="nav-text">My Profile</span></a>
                                 </li>
                                 <li><a href="../patient/reminders.php" aria-expanded="false">
                                                 <?php

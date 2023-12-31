@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Focus </title>
+    <title>Doctor Care </title>
     <!-- Favicon icon -->
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <link rel="icon" type="image/png" sizes="16x16" href="../.././images/favicon.png">
@@ -23,4 +23,6 @@
 
     <link rel="stylesheet" href="../iziToast-master/dist/css/iziToast.css">
     <link rel="stylesheet" href="../iziToast-master/dist/css/iziToast.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
 </head>

@@ -2,6 +2,19 @@ function showAndHidePass(checkBox, htmlInput) {
   if (checkBox) htmlInput.attr("type", "text");
   else htmlInput.attr("type", "password");
 }
+function showInfoOrErrorMessages(message, html, infoType = "success", timeout=4000) {
+  
+    html.html(
+      `
+<div class="alert ${infoType == "success" ? "alert-success" : "alert-danger"}">
+<strong>${message}</strong>
+</div>
+`
+    );
+  setTimeout(() => {
+    html.html("");
+  }, timeout);
+}
 
 function displayToast(message, type, timeout) {
   if (type == "error") {

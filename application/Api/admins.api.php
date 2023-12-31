@@ -142,12 +142,136 @@ class Admin extends DatabaseConnection
 
         echo  json_encode($response);
     }
+    public  function updatePassAdmin($_conn)
+    {
+        extract($_POST);
+        $response = array();
+        session_start();
+        $id =$_SESSION['user_id'];
+
+        $sql = "UPDATE admins set  `password`='$password'  where admin_id='$id';";
+        if (!$_conn)
+            $response = array("error" => "There is an error connection ", "status" => false);
+        else {
+            try {
+                $result = $_conn->query($sql);
+                if ($result)
+                    $response = array("message" => "Your password has been updated","error"=>"", "status" => true);
+                else
+                    $response = array("error" => "There is an error connection ", "status" => false);
+            } catch (Exception $e) {
+                $response = array(
+                    "error" => "There is an error occured while executing..",
+                    "message" => $e->getMessage(),
+                    "status" => false
+                );
+            }
+        }
+
+        echo  json_encode($response);
+    }
+    public  function updateAdminData($_conn)
+    {
+        extract($_POST);
+        $response = array();
+        session_start();
+        $id =$_SESSION['user_id'];
+
+        $sql = "UPDATE admins set  `username`='$username',`email`='$email'  where admin_id='$id';";
+        if (!$_conn)
+            $response = array("error" => "There is an error connection ", "status" => false);
+        else {
+            try {
+                $result = $_conn->query($sql);
+                if ($result)
+                    $response = array("message" => "Your Profile Data has been updated","error"=>"", "status" => true);
+                else
+                    $response = array("error" => "There is an error connection ", "status" => false);
+            } catch (Exception $e) {
+                $response = array(
+                    "error" => "There is an error occured while executing..",
+                    "message" => $e->getMessage(),
+                    "status" => false
+                );
+            }
+        }
+
+        echo  json_encode($response);
+    }
+    public  function disableAccount($_conn)
+    {
+        extract($_POST);
+        $response = array();
+        session_start();
+        $id =$_SESSION['user_id'];
+
+        $sql = "UPDATE admins set  `status`='block'  where admin_id='$id';";
+        if (!$_conn)
+            $response = array("error" => "There is an error connection ", "status" => false);
+        else {
+            try {
+                $result = $_conn->query($sql);
+                if ($result)
+                    $response = array("message" => "Your Profile Data has been updated","error"=>"", "status" => true);
+                else
+                    $response = array("error" => "There is an error connection ", "status" => false);
+            } catch (Exception $e) {
+                $response = array(
+                    "error" => "There is an error occured while executing..",
+                    "message" => $e->getMessage(),
+                    "status" => false
+                );
+            }
+        }
+
+        echo  json_encode($response);
+    }
+    public  function deleteOne($_conn)
+    {
+        extract($_POST);
+        $response = array();
+        session_start();
+        $id =$_SESSION['user_id'];
+
+        $sql = "DELETE FROM admins where admin_id='$id';";
+        if (!$_conn)
+            $response = array("error" => "There is an error connection ", "status" => false);
+        else {
+            try {
+                $result = $_conn->query($sql);
+                if ($result)
+                    $response = array("message" => "Your Profile Data has been updated","error"=>"", "status" => true);
+                else
+                    $response = array("error" => "There is an error connection ", "status" => false);
+            } catch (Exception $e) {
+                $response = array(
+                    "error" => "There is an error occured while executing..",
+                    "message" => $e->getMessage(),
+                    "status" => false
+                );
+            }
+        }
+
+        echo  json_encode($response);
+    }
 }
 $admin = new Admin;
 // checking
 switch ($_POST['action']) {
     case "createAdmin":
         $admin->createAdmin(Admin::getConnection());
+        break;
+    case "disableAccount":
+        $admin->disableAccount(Admin::getConnection());
+        break;
+    case "deleteOne":
+        $admin->deleteOne(Admin::getConnection());
+        break;
+    case "updateAdminData":
+        $admin->updateAdminData(Admin::getConnection());
+        break;
+    case "updatePassAdmin":
+        $admin->updatePassAdmin(Admin::getConnection());
         break;
     case "readAdmins":
         $admin->readAdmins(Admin::getConnection());

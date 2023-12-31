@@ -35,7 +35,7 @@ include '../include/sidebar.php';
                         <h5>Reminders</h5>
                         <button id="addNew" data-toggle="modal" data-target="#exampleModal" class="btn btn-success float-right add">Add New</button>
                     </div>
-                    <div class="card-block table-border-style">
+                    <div class="card-block table-border-style p-3">
                         <div class="table-responsive">
 
                             <table class="table">
@@ -170,20 +170,20 @@ include '../include/sidebar.php';
 
 
 <?php
+
 include '../include/footer.php';
-
-
-
 ?>
+
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+<script src="../js/validations.js"></script>
+<script src="../js/utils.js"></script>
 
+<script src='../js/jquery-3.3.1.min.js'></script>
 <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
 <script src="../iziToast-master/dist/js/iziToast.js"></script>
 <script src="../iziToast-master/dist/js/iziToast.min.js"></script>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-<script src='../js/jquery-3.3.1.min.js'></script>
-<script src='../js/validations.js'></script>
 <script>
     $(document).ready(() => {
 
@@ -378,6 +378,7 @@ include '../include/footer.php';
                         console.log(value)
                     })
                     $(".table tbody").html(tr)
+                    $(".table").DataTable()
                     console.log(tr)
 
 

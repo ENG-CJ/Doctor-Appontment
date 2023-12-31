@@ -3,7 +3,7 @@
 include_once "../include/session.php";
 include_once "../include/permission.auth.php";
 
-Permission::checkAuthPermissionSource("admin");
+Permission::checkAuthPermissionSource("patient");
 
 include '../include/links.php';
 include '../include/header.php';
@@ -14,16 +14,18 @@ include_once '../config/conn.db.php';
 $id = $_SESSION['user_id'];
 $data = array();
 
-$sql = "SELECT *FROM admins where admin_id='$id'";
+$sql = "SELECT *FROM patients where pat_id='$id'";
 $result = mysqli_query($conn->getConnection(), $sql);
 if ($result) {
     $rows = mysqli_fetch_array($result);
     $data = array(
-        "admin_d" => $rows['admin_id'],
-        "username" => $rows['username'],
+        "pat_id" => $rows['pat_id'],
+        "name" => $rows['name'],
         "email" => $rows['email'],
-        "status" => $rows['status'],
+        "mobile" => $rows['mobile'],
+        "address" => $rows['address'],
         "password" => $rows['password'],
+        "image" => $rows['profile_image'],
     );
 }
 
@@ -55,20 +57,41 @@ Content body start
                         <div class="photo-content">
                             <div class="cover-photo"></div>
                             <div class="profile-photo">
-                                <img src="../uploads/default.png" class="img-fluid rounded-circle" alt="">
+                                <?php
+                                if ($data['image'] == "no_profile") {
+                                ?>
+                                    <label for='profile'>
+                                        <input type="file" name="" hidden id="profile" class="new_profile">
+                                        <img id='profile' src="../uploads/default.png" class="img-fluid rounded-circle profile_set" alt="not found">
+                                    </label>
+
+                                <?php
+
+                                } else {
+                                ?>
+                                    <label for="profile">
+                                        <input type="file" name="" hidden id="profile" class="new_profile">
+                                        <img src="../uploads/<?php echo $data['image'] ?>" class="img-fluid rounded-circle profile_set" alt="not found">
+
+                                    </label>
+
+                                <?php
+                                }
+
+                                ?>
                             </div>
                         </div>
                         <div class="profile-info">
                             <div class="row justify-content-center">
-                                <div class="col-xl-8">
+                                <div class="col-xl-12">
                                     <div class="row">
-                                        <div class="col-xl-4 col-sm-4 border-right-1 prf-col">
+                                        <div class="col-xl-6 mt-5 col-sm-4 border-right-1 prf-col">
                                             <div class="profile-name">
-                                                <h4 class="text-primary"><?php echo $data['username'] ?></h4>
+                                                <h4 class="text-primary"><?php echo $data['name'] ?></h4>
                                                 <p><?php echo strtoupper($_SESSION['type']) ?></p>
                                             </div>
                                         </div>
-                                        <div class="col-xl-4 col-sm-4 border-right-1 prf-col">
+                                        <div class="col-xl-6 col-sm-4 mt-5 border-right-1 prf-col">
                                             <div class="profile-email">
                                                 <h4 class="text-muted"><?php echo $data['email'] ?></h4>
                                                 <p>Email</p>
@@ -122,24 +145,40 @@ Content body start
 
                                                 <form>
                                                     <div class="form-row">
-                                                        <div class="form-group col-md-6">
+                                                        <div class="form-group col-md-12">
                                                             <label>Email</label>
-                                                            <input type="email" value="<?php echo $data['email'] ?>" placeholder="Email" class="form-control email">
+                                                            <input type="email" value="<?php echo $data['email'] ?>" placeholder="Email" class="form-control email w-100">
                                                         </div>
 
                                                     </div>
                                                     <div class="form-row">
-                                                        <div class="form-group col-md-6">
+                                                        <div class="form-group col-md-12">
 
-                                                            <label>Username</label>
-                                                            <input type="text" placeholder="username" value="<?php echo $data['username'] ?>" class="form-control username">
+                                                            <label>Name</label>
+                                                            <input type="text" placeholder="name" value="<?php echo $data['name'] ?>" class="form-control name">
 
                                                         </div>
                                                     </div>
-                                                    <div class="form-group">
-                                                        <label>Status</label>
-                                                        <input type="text" disabled value="<?php echo $data['status'] ?>" placeholder="Apartment, studio, or floor" class="form-control">
+                                                    <div class="form-row">
+                                                        <div class="form-group col-md-12">
+
+                                                            <label>mobile</label>
+                                                            <input type="number" placeholder="mobile" value="<?php echo $data['mobile'] ?>" class="form-control mobile">
+
+                                                        </div>
                                                     </div>
+                                                    <div class="form-row">
+                                                        <div class="form-group col-md-12">
+
+                                                            <label>address</label>
+                                                            <input type="text" placeholder="address" value="<?php echo $data['address'] ?>" class="form-control address">
+
+                                                        </div>
+                                                    </div>
+                                                    <!-- <div class="form-group">
+                                                        <label>Status</label>
+                                                        <input type="text" disabled value="<?php echo $data['status'] ?>" class="form-control">
+                                                    </div> -->
 
                                                     <div class="my-2">
                                                         <div class="card">
@@ -150,11 +189,8 @@ Content body start
 
                                                             </div>
                                                             <div class="card-body">
-                                                                <div class="my-2">
-                                                                    <p class='fw-bold text-danger'>if you disable your account, you will not be able to login again <br> until your account has been released or activated</p>
-                                                                    <button class="btn btn-danger disable">Disable My Account</button>
-                                                                </div>
-                                                                <hr>
+                                                              
+                                                               
                                                                 <div class="my-2">
                                                                     <p class='fw-bold text-danger'>If your account is deleted, your data will be lost.</p>
                                                                     <button class="btn btn-danger delete">Delete My Account</button>
@@ -244,46 +280,18 @@ include '../include/footer.php';
 
 <script>
     $(document).ready(() => {
-        $(".disable").click((e) => {
-            e.preventDefault();
-            swal({
-                    title: "confirm to Disable Your account?",
-                    text: "Once disabled, you will no longer be active!",
-                    icon: "warning",
-                    buttons: true,
-                    dangerMode: true,
-                })
-                .then((willDelete) => {
-                    if (willDelete) {
-                        $.ajax({
-                            method: "POST",
-                            data: {
+        $(".new_profile").change((e) => {
+            var filename = e.target.value;
 
-                                "action": "disableAccount"
-                            },
-                            url: "../Api/admins.api.php",
-                            success: (res) => {
-                                swal("Account Has been disabled!", {
-                                    icon: "success",
-                                });
-                                window.location.href = "../";
-                            },
-                            error: (res) => {
-                                console.log(res)
-                                swal("Internal Error Occurred!", {
-                                    icon: "error",
-                                });
-                            }
+            var validExt = includesExtension(filename.split(".")[1]);
 
-                        })
+            if (validExt) {
+                $(".profile_set").attr("src", URL.createObjectURL(e.target.files[0]))
+                console.log(e.target.files[0])
 
-                    } else {
-                        // swal("Your imaginary file is safe!");
-                    }
-                });
-
-
+            }
         })
+ 
         $(".delete").click((e) => {
             e.preventDefault();
             swal({
@@ -301,7 +309,7 @@ include '../include/footer.php';
 
                                 "action": "deleteOne"
                             },
-                            url: "../Api/admins.api.php",
+                            url: "../Api/patient.api.php",
                             success: (res) => {
                                 swal("Account Has been Deleted!", {
                                     icon: "success",
@@ -340,12 +348,12 @@ include '../include/footer.php';
             } else {
                 var data = {
                     "password": $(".newPassword").val(),
-                    action: "updatePassAdmin"
+                    action: "updatePass"
                 }
                 $.ajax({
                     method: "POST",
                     dataType: "JSON",
-                    url: "../Api/admins.api.php",
+                    url: "../Api/patient.api.php",
                     data: data,
                     success: (res) => {
                         if (res.error != "") {
@@ -366,22 +374,43 @@ include '../include/footer.php';
         $('.saveChanges').click((e) => {
 
             e.preventDefault();
-            if ($(".username").val() == "" || $(".email").val() == "") {
+            if ($(".name").val() == "" || $(".email").val() == "" ||
+                $(".mobile").val() == "" || $(".address").val() == ""
+            ) {
                 showInfoOrErrorMessages("Fill All Required Fields", $(".info-body"), "error")
             } else if (!emailVerify($(".email").val())) {
                 showInfoOrErrorMessages("Incorrect Email Format use (example@gmail.com)", $(".info-body"), "error")
-            } else if (!containsOnlyAlphanumeric($(".username").val())) {
-                showInfoOrErrorMessages("Username Cannot contain any special character also cannot start numerical value, also cannot contain any spaces", $(".info-body"), "error")
+            } else if (!hasValidFullName($(".name").val())) {
+                showInfoOrErrorMessages("Fullname must be valid fullname", $(".info-body"), "error")
+            } else if (!validMobile($(".mobile").val())) {
+                showInfoOrErrorMessages("Moile length must be 9 or 10 digits", $(".info-body"), "error")
             } else {
+                if ($(".new_profile")[0].files.length > 0) {
+                    var data = new FormData();
+                    data.append("name", $(".name").val())
+                    data.append("email", $(".email").val())
+                    data.append("mobile", $(".mobile").val())
+                    data.append("address", $(".address").val())
+                    data.append("profile", $(".new_profile")[0].files[0])
+                    data.append("action", "updatePatientWithProfile")
+                    updatePatientWithProfile(data, response => {
+                        showInfoOrErrorMessages("Your Profile Has been updated", $(".info-body"), "success")
+
+                    })
+
+                    return;
+                }
                 var data = {
-                    "username": $(".username").val(),
+                    "name": $(".name").val(),
                     "email": $(".email").val(),
-                    action: "updateAdminData"
+                    "mobile": $(".mobile").val(),
+                    "address": $(".address").val(),
+                    action: "updatePatientData"
                 }
                 $.ajax({
                     method: "POST",
                     dataType: "JSON",
-                    url: "../Api/admins.api.php",
+                    url: "../Api/patient.api.php",
                     data: data,
                     success: (res) => {
                         if (res.error != "") {
@@ -399,5 +428,25 @@ include '../include/footer.php';
             }
 
         })
+
+        function updatePatientWithProfile(data, returnResponse) {
+            $.ajax({
+                method: "POST",
+                dataType: "JSON",
+                url: "../Api/patient.api.php",
+                contentType: false,
+                processData: false,
+                cache: false,
+                data: data,
+                success: (res) => {
+                    returnResponse(res)
+
+                },
+                error: (res) => {
+                    showInfoOrErrorMessages("Internal error occurred", $(".info-body"), "error")
+                    // displayToast("Internal Server error occurred 😢", "error", 2000)
+                }
+            })
+        }
     })
 </script>

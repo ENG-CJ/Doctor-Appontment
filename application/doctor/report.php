@@ -61,13 +61,14 @@ h
             <div class="col-xl-12">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
-                        <h5>Lists</h5>
+                        <h5>Report Generated</h5>
                         <div>
-                            <button id="addNew" data-toggle="modal" data-target="#exampleModal" class="btn btn-dark float-right print">
+                            <!-- <button id="addNew" data-toggle="modal" data-target="#exampleModal" class="btn btn-dark float-right print">
                                 <i class="fa-solid fa-print"></i>
 
-                                Print</button>
-                            <button id="addNew" data-toggle="modal" data-target="#exampleModal" class="btn btn-dark float-right refresh mr-2">
+                                Print</button> -->
+                            <button id="addNew" data-toggle="modal" data-target="#exampleModal"
+                                class="btn btn-dark float-right refresh mr-2">
                                 <i class="fa-solid fa-arrow-rotate-right"></i>
 
                                 Refresh</button>
@@ -75,10 +76,10 @@ h
                     </div>
                     <div class="card-block table-border-style p-3">
                         <div class="report-area">
-                            <img src="http://localhost/Doctor-Appontment/application/uploads/logo_2.png" alt="" class="img-fluid mb-3" style='height: 260px; width: 100%'>
+                            <!-- <img src="http://localhost/Doctor-Appontment/application/uploads/logo_2.png" alt="" class="img-fluid mb-3" style='height: 260px; width: 100%'> -->
                             <div class="table-responsive list_appointments">
 
-                                <table class="table">
+                                <table class="table" id='reportTable'>
                                     <thead>
                                         <tr>
                                             <th>#</th>
@@ -118,7 +119,8 @@ h
             <div class="modal-body">
                 <div class="alert alert-info">
                     <i class="fa-solid fa-circle-info mr-2"></i><strong>
-                        Before making any edits to an appointment, please specify the desired profession or specialty of the doctor you are looking for.
+                        Before making any edits to an appointment, please specify the desired profession or specialty of
+                        the doctor you are looking for.
                     </strong>
                 </div>
                 <hr>
@@ -154,7 +156,8 @@ h
                     </div>
                     <div class="mb-3">
                         <label for="message-text" class="col-form-label">Descriptions</label>
-                        <textarea class='form-control description' placeholder="Please describe your symptoms"></textarea>
+                        <textarea class='form-control description'
+                            placeholder="Please describe your symptoms"></textarea>
                     </div>
                     <input type='text' hidden class='id mr-2' id="show" />
 
@@ -167,7 +170,8 @@ h
         </div>
     </div>
 </div>
-<div class="modal fade bd-example-modal-lg viewModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+<div class="modal fade bd-example-modal-lg viewModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+    aria-hidden="true">
 
     <div class="modal-dialog modal-lg">
 
@@ -186,7 +190,8 @@ h
     </div>
 </div>
 
-<div class="modal fade statusModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+<div class="modal fade statusModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -199,7 +204,8 @@ h
             </div>
             <div class="modal-body p-2">
                 <div class="my-2">
-                    <strong class='text-muted'>The confirmation should be based on the status of the appointment, which can be either "In progress" or "Completed."</strong>
+                    <strong class='text-muted'>The confirmation should be based on the status of the appointment, which
+                        can be either "In progress" or "Completed."</strong>
                 </div>
 
             </div>
@@ -212,7 +218,8 @@ h
         </div>
     </div>
 </div>
-<div class="modal fade err-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+<div class="modal fade err-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -226,7 +233,8 @@ h
             </div>
             <div class="modal-body p-2">
                 <div class="alert alert-danger">
-                    <strong>Printing is restricted to completed or in-progress appointments only. Data that is pending confirmation cannot be printed at this stage.</strong>
+                    <strong>Printing is restricted to completed or in-progress appointments only. Data that is pending
+                        confirmation cannot be printed at this stage.</strong>
                 </div>
             </div>
             <div class="modal-footer">
@@ -238,12 +246,18 @@ h
 </div>
 
 <?php
+
 include '../include/footer.php';
-
-
 ?>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+    integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+    integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
+    crossorigin="anonymous"></script>
+<script src="../js/validations.js"></script>
+<script src="../js/utils.js"></script>
 
 <script src='../js/jquery-3.3.1.min.js'></script>
 <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
@@ -252,8 +266,20 @@ include '../include/footer.php';
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script src='../printThis.js'></script>
 
+
+
+
+<script src='https://cdn.jsdelivr.net/npm/@linways/table-to-excel@1.0.4/dist/tableToExcel.min.js'></script>
+<script src="https://cdn.jsdelivr.net/npm/table-export@1.0.2/dist/tableExport.min.js"></script>
+<script src='https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js'></script>
+<script src='https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js'></script>
+<script src='https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js'></script>
+
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
         $('.ok').click(() => $('.err-modal').modal('hide'))
         $('.submit').click(() => {
             if ($('.date').val() != "" && $('.status').val() != "") {
@@ -406,6 +432,14 @@ include '../include/footer.php';
 </div>
                         
                         `)
+                // Clear DataTables and display the error message
+                var table = $('.table').DataTable();
+                table.clear().draw(); // Clear the table content
+
+                // Disable print button when there is no data
+                $('.buttons-print').addClass('disabled'); // 
+                $('.buttons-pdf').addClass('disabled'); // 
+                $('.buttons-csv').addClass('disabled'); // 
                 return;
             }
             var tr = "<tr>"
@@ -457,8 +491,19 @@ include '../include/footer.php';
                                     </thead>
                                     <tbody>
                                     ${tr}</tbody>
-
+<tfoot>
+            <tr>
+                <td colspan="5">
+                    <div class='mt-5'>
+                        <strong>___________________________________</strong><br>
+                        <span>Doctor's Signature</span><br>
+                        Dr.<strong>${drName}</strong>
+                    </div>
+                </td>
+            </tr>
+        </tfoot>
                                 </table>
+               
             
             `;
             var doctor = `
@@ -472,9 +517,29 @@ include '../include/footer.php';
             </div>
             
             `
-
+            if ($.fn.DataTable.isDataTable('.table')) {
+                $('.table').DataTable().destroy();
+            }
+            $('.table tbody').empty();
             $(".list_appointments").html(htmlTable);
-            $(".list_appointments").append(doctor);
+            // $(".list_appointments").append(doctor);
+
+
+            // Re-initialize DataTable
+            $('.table').DataTable({
+                stateSave: true,
+                dom: 'Bfrtip',
+                buttons: [
+                    'csv', 'pdf', 'print',
+                    {
+                        extend: 'excel',
+                        title: 'PDF REPORT',
+                        text: '<i class="fa fa-table fainfo" aria-hidden="true" ></i>',
+                        titleAttr: 'Export Excel',
+                    }
+                ]
+            });
+
 
         }
 
