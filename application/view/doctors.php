@@ -18,11 +18,13 @@ include '../include/sidebar.php';
 <div class="content-body">
     <div class="container-fluid">
         <div class="row page-titles mx-0">
-            <div class="col-sm-6 p-md-0">
+            <div class="col-lg-12 col-sm-12 p-md-0">
+
                 <div class="welcome-text">
                     <h4>List of doctors</h4>
                     <span class="ml-1">Manage All operations</span>
                 </div>
+
             </div>
 
         </div>
@@ -39,136 +41,136 @@ include '../include/sidebar.php';
         </div>
         <div class="row">
             <div class="col-xl-12">
-                <div class="card">
-                    <div class="card-header">
-                        <h5>All Doctors</h5>
-                        <!-- <button id="addNew" data-toggle="modal" data-target="#exampleModal"
-                            class="btn btn-primary float-right add">Add New</button> -->
-                    </div>
-                    <div class="card-block table-border-style p-2">
-                        <div class="table-responsive">
-                            <div class="m-2 no-data">
+                <div class="card bg-light border-0" style='border-radius: 18px; box-shadow: -1px 1px 53px -1px rgba(206,206,206,0.75);
+-webkit-box-shadow: -1px 1px 53px -1px rgba(206,206,206,0.75);
+-moz-box-shadow: -1px 1px 53px -1px rgba(206,206,206,0.75);'>
+                  
+                <div class="card-block table-border-style p-2">
+                    <h6>List of all doctors</h6>
+                    <p class='text-muted'>view and manage list of all active and deactive doctors</p>
+                    <div class="table-responsive">
+                        <div class="m-2 no-data">
 
-                            </div>
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>name</th>
-                                        <th>gender</th>
-                                        <th>Mobile</th>
-                                        <!-- <th>address</th> -->
-                                        <th>email</th>
-                                        <th>verified</th>
-                                        <!-- <th>description</th> -->
-                                        <th>hospital</th>
-                                        <!-- <th>password</th>
+                        </div>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>name</th>
+                                    <th>gender</th>
+                                    <th>Mobile</th>
+                                    <!-- <th>address</th> -->
+                                    <th>email</th>
+                                    <th>verified</th>
+                                    <!-- <th>description</th> -->
+                                    <th>hospital</th>
+                                    <!-- <th>password</th>
                                         <th>image</th> -->
 
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                </tbody>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
 
-                            </table>
-                        </div>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <div class="modal fade view_Modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">View Doctor</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body view_body" id="print-area">
+<div class="modal fade view_Modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">View Doctor</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body view_body" id="print-area">
 
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-success print">Print</button>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-success print">Print</button>
 
 
-                </div>
             </div>
         </div>
     </div>
-    <!--**********************************
+</div>
+<!--**********************************
             Content body end
         ***********************************-->
 
-    <div class="modal fade doctorModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Add/Edit Doctor</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form>
-                        <div class="mb-3">
-                            <input type="text" class="form-control name" placeholder="name" id="recipient-name">
+<div class="modal fade doctorModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add/Edit Doctor</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <input type="text" class="form-control name" placeholder="name" id="recipient-name">
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-group proffision_selection">
+                            <select name="proffision" class="form-control proffision_id">
+                                <!-- <option value="" selected> Select Proffission</option> -->
+                                <!-- <option value="1">male</option>
+                                <option value="2">female</option> -->
+                            </select>
+                        </div>
+                        <div class="form-group hospital_selection">
+                            <select name="hospital" class="form-control hospital_id">
+                                <!-- <option value="" selected> Select Hospital</option> -->
+
+                            </select>
                         </div>
                         <div class="mb-3">
-                            <div class="form-group proffision_selection">
-                                <select name="proffision" class="form-control proffision_id">
-                                    <!-- <option value="" selected> Select Proffission</option> -->
-                                    <!-- <option value="1">male</option>
-                                <option value="2">female</option> -->
-                                </select>
-                            </div>
-                            <div class="form-group hospital_selection">
-                                <select name="hospital" class="form-control hospital_id">
-                                    <!-- <option value="" selected> Select Hospital</option> -->
+                            <input type="text" class="form-control mobile" placeholder="mobile" id="recipient-name">
+                        </div>
+                        <div class="mb-3">
+                            <input type="text" class="form-control address" placeholder="address" id="recipient-name">
+                        </div>
+                        <div class="mb-3">
+                            <input type="text" class="form-control email" placeholder="email" id="recipient-name">
+                        </div>
+                        <div class="mb-3">
+                            <input type="text" class="form-control description" placeholder="description" id="recipient-name">
+                        </div>
+                        <div class="mb-3">
+                            <input type="file" class="form-control image" placeholder="profile_image" id="recipient-name">
+                            <p>Selected File: <span class="filename"></span></p>
+                        </div>
+                        <div class="mb-3 gender">
+                            <label for=""> Gender:</label>
+                            <input type="radio" name="gender" value="1" id="male"> Male &nbsp;
+                            <input type="radio" name="gender" value="0" id="female"> Female &nbsp;
+                        </div>
+                        <div class="mb-3">
+                            <input type="text" class="form-control password" placeholder="@password" id="recipient-name">
+                            <input type="text" hidden class="form-control id" id="recipient-name">
+                        </div>
+                        <div class="mb-3" style="display: flex; align-items: center;">
+                            <input type='checkbox' class='showPass mr-2' id="show" />
+                            <label for="show" class="col-form-label">
+                                Show Password
+                            </label>
 
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <input type="text" class="form-control mobile" placeholder="mobile" id="recipient-name">
-                            </div>
-                            <div class="mb-3">
-                                <input type="text" class="form-control address" placeholder="address" id="recipient-name">
-                            </div>
-                            <div class="mb-3">
-                                <input type="text" class="form-control email" placeholder="email" id="recipient-name">
-                            </div>
-                            <div class="mb-3">
-                                <input type="text" class="form-control description" placeholder="description" id="recipient-name">
-                            </div>
-                            <div class="mb-3">
-                                <input type="file" class="form-control image" placeholder="profile_image" id="recipient-name">
-                                <p>Selected File: <span class="filename"></span></p>
-                            </div>
-                            <div class="mb-3 gender">
-                                <label for=""> Gender:</label>
-                                <input type="radio" name="gender" value="1" id="male"> Male &nbsp;
-                                <input type="radio" name="gender" value="0" id="female"> Female &nbsp;
-                            </div>
-                            <div class="mb-3">
-                                <input type="text" class="form-control password" placeholder="@password" id="recipient-name">
-                                <input type="text" hidden class="form-control id" id="recipient-name">
-                            </div>
-                            <div class="mb-3" style="display: flex; align-items: center;">
-                                <input type='checkbox' class='showPass mr-2' id="show" />
-                                <label for="show" class="col-form-label">
-                                    Show Password
-                                </label>
-
-                            </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary save">save</button>
-                </div>
+                        </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary save">save</button>
             </div>
         </div>
     </div>
+</div>
 
 </div>
 
@@ -763,12 +765,8 @@ include '../include/footer.php';
                     tr += "</tr>";
                 });
                 $(".table tbody").html(tr);
-                $(".table").DataTable({
-                    dom: 'Bfrtip',
-                    buttons: [
-                        'copy', 'csv', 'excel', 'pdf', 'print'
-                    ]
-                });
+                $(".table").DataTable();
+               
             }
 
             function getHospitalDataForAddingNewDoctor() {

@@ -701,7 +701,10 @@ include '../include/footer.php';
                                 $('.all-reviews').append(`
                         
                           <div class="col-6">
-                            <div class="card text-dark ${satisfied > unsatisfied ? "border-success" : "border-danger" } mb-3 w-100">
+                        
+                            <div style='border-radius: 18px; box-shadow: -1px 1px 53px -1px rgba(206,206,206,0.75);
+-webkit-box-shadow: -1px 1px 53px -1px rgba(206,206,206,0.75);
+-moz-box-shadow: -1px 1px 53px -1px rgba(206,206,206,0.75);' class="card  bg-light text-dark ${satisfied > unsatisfied ? "border-success" : "border-danger" } mb-3 w-100">
                                 <div class="card-header ${satisfied > unsatisfied ? "border-success" : "border-danger" } d-flex justify-content-between align-items-center">
                                     <div>
                                         <strong>${value.drName}</strong><br>
@@ -724,7 +727,7 @@ include '../include/footer.php';
                                     <div class="input-group my-3">
                                         <div class="input-group-prepend">
                                             <button class="btn btn-outline-danger ban" drEmail="${value.email}" drID="${value.dr_id}" type="button">Ban</button>
-                                            <button class="btn btn-outline-warning sendWarning" drEmail="${value.email}" drName="${value.drName}" drID="${value.dr_id}" type="button">Send Warning Email</button>
+                                            <button class="btn btn-warning sendWarning" drEmail="${value.email}" drName="${value.drName}" drID="${value.dr_id}" type="button">Send Warning Email</button>
                                         </div>
                                         <input type="text" class="form-control warnEmail" placeholder="One-line message" aria-label="" aria-describedby="basic-addon1">
                                     </div>

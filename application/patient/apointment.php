@@ -77,7 +77,7 @@ h
 
 
 <div class="modal fade editAppointmentModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Edit Appointment</h5>
@@ -123,6 +123,28 @@ h
                     <div class="mb-3">
                         <label for="message-text" class="col-form-label">Descriptions</label>
                         <textarea class='form-control description' placeholder="Please describe your symptoms"></textarea>
+                    </div>
+
+                    <div class="mt-5">
+                        <div class='alert alert-primary'>Reminder Method.</div>
+                        <div class="d-flex">
+                            <div class="form-check form-check-inline d-flex align-items-center">
+                                <input class="form-check-input method" type="radio" name="method" id="email" value="email">
+                                <label class="form-check-label" for="email">Via Email</label>
+                            </div>
+                            <div class="form-check form-check-inline d-flex align-items-center">
+                                <input class="form-check-input method" type="radio" name="method" id="call" value="call">
+                                <label class="form-check-label" for="call">Via Call</label>
+                            </div>
+                            <div class="form-check form-check-inline d-flex align-items-center">
+                                <input class="form-check-input method" type="radio" name="method" id="system" value="in_system">
+                                <label class="form-check-label" for="system">In-System</label>
+                            </div>
+                            <div class="form-check form-check-inline d-flex align-items-center">
+                                <input class="form-check-input method" type="radio" checked name="method" id="not" value="none">
+                                <label class="form-check-label" for="not">Do not remind me</label>
+                            </div>
+                        </div>
                     </div>
                     <input type='text' hidden class='id mr-2' id="show" />
 
@@ -251,6 +273,10 @@ include '../include/footer.php';
 
 <script>
     $(document).ready(function() {
+        var method = '';
+        $('.method').on("change", function(e) {
+            method = e.target.value;
+        })
         $('.viewReminder').on("click", function(e) {
             window.location.href = "./reminders.php";
         })
@@ -457,6 +483,7 @@ include '../include/footer.php';
                     date: $(".date").val(),
                     diagnose: $(".diagnose").val(),
                     dr: $(".doctors").val(),
+                    reminder: method,
                     id: $(".id").val(),
                     description: $('.description').val(),
                     action: "updateAppointment",
@@ -470,7 +497,8 @@ include '../include/footer.php';
 
                         console.log(res)
                         loadAppointments()
-                        alert(res.message)
+                        displayToast("Appointment has been updated", "success", 4000)
+                        $(".editAppointmentModal").modal("hide");
                     },
                     error: (res) => {
                         console.log(res)
@@ -498,12 +526,26 @@ include '../include/footer.php';
                     url: "../Api/doctor.api.php",
                     success: (res) => {
                         if (res.data.length > 0) {
-                            $(".date").attr("disabled", true)
-                            option = `<option value='${res.data[0].date}'>${res.data[0].date}</option>`
-                            $('.date').html(option)
-                            $('.date').css({
-                                border: "1px solid grey"
-                            })
+                            if (res.data.length > 1) {
+                                $(".date").attr("disabled", false)
+                                var op = `<option value=''>Select Appointment Date</option>`
+                                res.data.forEach(value => {
+                                    op += ` <option value='${value.date}'>${value.date}</option>`
+
+                                })
+                                $('.date').css({
+                                    border: "1px solid grey"
+                                })
+                                $(".date").html(op)
+
+                            } else {
+                                $(".date").attr("disabled", true)
+                                option = `<option value='${res.data[0].date}'>${res.data[0].date}</option>`
+                                $('.date').html(option)
+                                $('.date').css({
+                                    border: "1px solid grey"
+                                })
+                            }
                         } else {
 
                             option2 = "<option value=''>Related Data Error (No Appointment Date)</option>"
@@ -706,7 +748,7 @@ include '../include/footer.php';
                     } = res;
                     option = ` <option value="" selected>Select</option>`
                     data.forEach(values => {
-                        option += `<option value="${values.name}">${values.name}</option>`
+                        option += `<option value="${values.pro_name}">${values.pro_name}</option>`
                     });
                     $(".proffision_selection").html(option);
                 },
@@ -760,10 +802,17 @@ include '../include/footer.php';
 
                     $('.body-content').html(`
                 
-                 <img src="http://localhost/Doctor-Appontment/application/images/doctor-logo.png" alt="" class="image-fluid w-100">
+                 <div class='text-center'>
+                 <h4>Doctor Care Appointment</h4>
+                 <span>View & Print Doctor's Data</span>
+                 </div>
                 <br>
                 <br>
                 <br>
+                  <div class="mb-2">
+                    <strong>Card Number : </strong><h3 class='float-right'>${res.data[0].card}</h3>
+                    <p class='text-muted fw-bold'>This card number serves as your unique identifier within the appointment queue.</p>
+                </div>
                 <h6>Patient Details</h6>
                 <table style="border-collapse: collapse; width: 100%;" class='mb-4'>
                     <thead>
@@ -933,6 +982,19 @@ include '../include/footer.php';
                 $(".diagnose").val(res.data[0].diagnose_id)
                 $(".description").val(res.data[0].symptom_description)
                 // alert(res.data[0].appo_date)
+                if (res.data[0].reminder.toLocaleLowerCase() == "none") {
+                    $("#none").attr("checked", true);
+                    method = res.data[0].reminder
+                } else if (res.data[0].reminder.toLocaleLowerCase() == "in_system") {
+                    $("#system").attr("checked", true);
+                    method = res.data[0].reminder
+                } else if (res.data[0].reminder.toLocaleLowerCase() == "call") {
+                    $("#call").attr("checked", true);
+                    method = res.data[0].reminder
+                } else if (res.data[0].reminder.toLocaleLowerCase() == "email") {
+                    $("#email").attr("checked", true);
+                    method = res.data[0].reminder
+                }
                 $(".editAppointmentModal").modal("show")
 
             })
@@ -953,6 +1015,7 @@ include '../include/footer.php';
                     var {
                         data
                     } = res;
+                    console.log("data is ", data)
                     if (data.length == 0) {
                         $('.list_appointments').html(`
                        <div class="alert alert-info" role="alert">

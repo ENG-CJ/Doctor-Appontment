@@ -142,7 +142,9 @@ Content body start
                                                     </div>
 
                                                     <div class="my-2">
-                                                        <div class="card">
+                                                        <div class="card border-0 bg-light" style='border-radius: 18px; box-shadow: -1px 1px 53px -1px rgba(179,180,186,0.75);
+-webkit-box-shadow: -1px 1px 53px -1px rgba(179,180,186,0.75);
+-moz-box-shadow: -1px 1px 53px -1px rgba(179,180,186,0.75);'>
                                                             <div class="card-header">
                                                                 <h4 class="text-danger fw-bold">
                                                                     Danger Area

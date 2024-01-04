@@ -21,7 +21,7 @@
                         <div class="row no-gutters">
                             <div class="col-xl-12">
                                 <div class="auth-form">
-                                    <h4 class="text-center mb-4">Ragister an account</h4>
+                                    <h4 class="text-center mb-4">Register an account</h4>
                                     <form >
                                         <div class="text-center">
                                             <button type="submit" class="btn btn-primary btn-block patient">Register as

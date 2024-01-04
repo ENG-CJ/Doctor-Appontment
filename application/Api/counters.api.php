@@ -119,8 +119,8 @@ GROUP BY diagnose.name
         extract($_POST);
         $res = array();
         $data = array();
-        $sql = "SELECT * FROM `doctors`
-                 WHERE  `verified`='No' LIMIT 5";
+        $sql = "SELECT * FROM `doctors` left JOIN proffision ON doctors.profision_id=proffision.pro_id
+                 WHERE  `verified`='No' LIMIT 8";
         if (!$conn)
             $res = array("error" => "there is an error");
         else {

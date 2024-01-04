@@ -35,13 +35,16 @@ include '../include/sidebar.php';
 
         <div class="row">
             <div class="col-xl-12">
-                <div class="card">
-                    <div class="card-header">
-                        <!-- <h5>Basic Table</h5> -->
-                        <button id="addNew" class="btn btn-primary float-right add">Create Profession</button>
-                    </div>
+                <div class="card bg-light border-0" style='border-radius: 18px; box-shadow: -1px 1px 53px -1px rgba(206,206,206,0.75);
+-webkit-box-shadow: -1px 1px 53px -1px rgba(206,206,206,0.75);
+-moz-box-shadow: -1px 1px 53px -1px rgba(206,206,206,0.75);'>
+                    <!-- <div class="card-header"> -->
+                    <!-- <h5>Basic Table</h5> -->
+                    <!-- <button id="addNew" class="btn btn-primary float-right add">Create Profession</button> -->
+                    <!-- </div> -->
                     <div class="card-block table-border-style p-3">
                         <div class="table-responsive">
+                            <button id="addNew" class="btn btn-success add mb-4">Create New</button>
 
                             <table class="table">
                                 <thead>
@@ -246,8 +249,8 @@ include '../include/footer.php';
                         tr += `<td>${value.pro_id}</td>`
                         tr += `<td>${value.pro_name}</td>`
                         tr += `<td>${value.description}</td>`
-                        tr += `<td><a class='btn btn-success editButton' editID=${value.pro_id}>Edit</a>
-                      <a class='btn btn-danger deleteProffision' delID=${value.pro_id}>Delete</a></td>`
+                        tr += `<td><a class='btn btn-success editButton text-light fw-bold' editID=${value.pro_id}>Edit</a>
+                      <a class='btn btn-danger deleteProffision text-light fw-bold' delID=${value.pro_id}>Delete</a></td>`
                         tr += '</tr>'
                     })
                     $(".table tbody").html(tr)

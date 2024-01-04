@@ -31,10 +31,12 @@ include '../include/sidebar.php';
 
         <div class="row">
             <div class="col-xl-12">
-                <div class="card">
-                    <div class="card-header ">
+                <div class="card bg-light border-0" style='border-radius: 18px; box-shadow: -1px 1px 53px -1px rgba(206,206,206,0.75);
+-webkit-box-shadow: -1px 1px 53px -1px rgba(206,206,206,0.75);
+-moz-box-shadow: -1px 1px 53px -1px rgba(206,206,206,0.75);'>
+                    <div class="card-header border-0">
                         <h5>All Schedules</h5>
-                        <button id="addNew" data-toggle="modal" class="btn btn-primary float-right add">Setup Schedule</button>
+                        <button id="addNew" data-toggle="modal" class="btn btn-dark float-right add">Setup Schedule</button>
                     </div>
                     <div class="card-block table-border-style p-3">
                         <div class="table-responsive">

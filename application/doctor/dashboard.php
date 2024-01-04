@@ -10,9 +10,9 @@ include '../include/sidebar.php';
 <!--**********************************
             Content body start
         ***********************************-->
-<div class="content-body">
+<div class="content-body bg-light">
     <!-- row -->
-    <div class="container-fluid">
+    <div class="container-fluid bg-light">
         <div class="row">
             <div class="col-lg-3 col-sm-6">
                 <div class="card text-light" style="background: #79155B;">
@@ -80,9 +80,11 @@ include '../include/sidebar.php';
 
 
             <div class="col-12">
-                <div class="card">
+                <div class="card border-0 bg-light" style='border-radius: 18px; box-shadow: -1px 1px 53px -1px rgba(179,180,186,0.75);
+-webkit-box-shadow: -1px 1px 53px -1px rgba(179,180,186,0.75);
+-moz-box-shadow: -1px 1px 53px -1px rgba(179,180,186,0.75);'>
                     <div class="card-header">
-                        <h5>Active Appointments</h5>
+                        <strong>Active Appointments</strong>
                     </div>
                     <div class="card-body body-dash">
                         <table class="table table-bordered">
@@ -104,16 +106,18 @@ include '../include/sidebar.php';
                 </div>
             </div>
             <div class="col-12">
-                <div class="card">
+                <div class="card border-0 bg-light" style='border-radius: 18px; box-shadow: -1px 1px 53px -1px rgba(179,180,186,0.75);
+-webkit-box-shadow: -1px 1px 53px -1px rgba(179,180,186,0.75);
+-moz-box-shadow: -1px 1px 53px -1px rgba(179,180,186,0.75);'>
                     <div class="card-header">
-                        <h5>Visualizations</h5>
+                        <strong>Visualizations</strong>
                     </div>
                     <div class="card-body body-dash">
                         <div class="row">
                             <div class="col-6" id="chart_div">
 
                             </div>
-                            <div class="col-6" id="diagnoses">
+                            <div class="col-6" id="calamado">
 
                             </div>
                         </div>
@@ -165,7 +169,6 @@ include '../include/footer.php';
                     ]);
                 })
 
-
                 console.log("review", res.data)
                 // Set chart options
                 var options = {
@@ -178,6 +181,7 @@ include '../include/footer.php';
                 // Instantiate and draw our chart, passing in some options.
                 var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
                 chart.draw(data, options);
+
             })
 
 
@@ -187,11 +191,11 @@ include '../include/footer.php';
 
             // Create the data table.
             var data = new google.visualization.DataTable();
-            data.addColumn('string', 'Review');
-            data.addColumn('number', 'Number Of Reviews');
+            data.addColumn('string', 'Symptom');
+            data.addColumn('number', 'Number Of symptoms');
             getDiagnosesNumber(res => {
                 res.data.forEach(value => {
-                    console.log("all ", `[${value.review}, ${value.number}]`)
+                    console.log("symptoms ", `[${value.name}, ${value.number}]`)
                     data.addRows([
                         [`${value.name}`, Number(value.number)]
                     ]);
@@ -208,7 +212,7 @@ include '../include/footer.php';
                 };
 
                 // Instantiate and draw our chart, passing in some options.
-                var chart = new google.visualization.PieChart(document.getElementById('diagnoses'));
+                var chart = new google.visualization.PieChart(document.getElementById('calamado'));
                 chart.draw(data, options);
             })
 

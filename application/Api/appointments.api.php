@@ -285,7 +285,7 @@ ON appointment.pat_id=patients.pat_id
 JOIN diagnose
 ON appointment.diagnose_id=diagnose.diganose_id
 JOIN doctors
-ON appointment.dr_id=doctors.dr_id;";
+ON appointment.dr_id=doctors.dr_id ORDER BY appo_date DESC;";
         if (!$conn)
             $response = array("error" => "error from database", "status" => false);
         else {
@@ -469,6 +469,31 @@ ON reminder.user=patients.pat_id";
         }
         echo json_encode($response);
     }
+    private static function checkAndRetrieveCardNumber($date,$conn) : int
+    {
+        extract($_POST);
+        $response = array();
+        $currentCardNumber = 1;
+        $data = array();
+        $sql = "SELECT * From appointment where appo_date='$date'";
+        if (!$conn)
+            $response = array("error" => "error from database", "status" => false);
+        else {
+            $result = $conn->query($sql);
+            if ($result) {
+               
+                if(mysqli_num_rows($result)>0){
+                    $sql_max_card_number = "SELECT MAX(card_number) as cardNumber From appointment where appo_date='$date'";
+                    $result = $conn->query($sql_max_card_number);
+                    $row=$result->fetch_assoc();
+                    $currentCardNumber=$row["cardNumber"]+1;
+                }
+
+               
+            }
+        }
+       return $currentCardNumber;
+    }
     public function readReviewsForAdmin($conn)
     {
         extract($_POST);
@@ -619,7 +644,7 @@ where pat_id='$id'";
         extract($_POST);
         $response = array();
         $data = array();
-        $sql = "SELECT appo_id,appo_date From appointment where status='Pending' and pat_id='$id'";
+        $sql = "SELECT appo_id, appo_date From appointment where status='Pending' and pat_id='$id'";
 
 
         if (!$conn)
@@ -681,13 +706,14 @@ where pat_id='$id'";
         extract($_POST);
         $response = array();
 
-        $sql = "INSERT INTO `appointment`(`appo_date`, `diagnose_id`, `symptom_description`, `dr_id`, `pat_id`,`status`,`reminder`) VALUES('$appointment_date','$diagnose','$description','$dr_id','$pat_id','Pending','$reminder')";
+        $currentCardNumber=Appointment::checkAndRetrieveCardNumber($appointment_date,Appointment::getConnection());
+        $sql = "INSERT INTO `appointment`(`appo_date`, `diagnose_id`, `symptom_description`, `dr_id`, `pat_id`,`status`,`reminder`,`card_number`) VALUES('$appointment_date','$diagnose','$description','$dr_id','$pat_id','Pending','$reminder','$currentCardNumber')";
         if (!$conn) {
             $response = array("error" => "there is an error connection", "status" => false);
         } else {
             $result = $conn->query($sql);
             if ($result) {
-                $response = array("message" => "Doctor successfully created...", "status" => true);
+                $response = array("message" => "appointment was created", "status" => true);
             } else {
                 $response = array("error" => " error connection", "Status" => false);
             }
@@ -701,8 +727,9 @@ where pat_id='$id'";
         $pat_id = $_SESSION['user_id'];
         extract($_POST);
         $response = array();
+        $currentCardNumber = Appointment::checkAndRetrieveCardNumber($appointment_date, Appointment::getConnection());
 
-        $sql = "INSERT INTO `appointment`(`appo_date`, `diagnose_id`, `symptom_description`, `dr_id`, `pat_id`,`status`,`reminder`) VALUES('$appointment_date','$diagnose','$description','$dr_id','$pat_id','Pending','$reminder')";
+        $sql = "INSERT INTO `appointment`(`appo_date`, `diagnose_id`, `symptom_description`, `dr_id`, `pat_id`,`status`,`reminder`,`card_number`) VALUES('$appointment_date','$diagnose','$description','$dr_id','$pat_id','Pending','$reminder','$currentCardNumber')";
         if (!$conn) {
             $response = array("error" => "there is an error connection", "status" => false);
         } else {
@@ -720,6 +747,8 @@ where pat_id='$id'";
     {
         extract($_POST);
         $response = array();
+        session_start();
+        $pat_id= $_SESSION['user_id'];
 
         $sql = "UPDATE `appointment` SET `reminder`='$reminder', `appo_date`='$date',`diagnose_id`='$diagnose',`symptom_description`='$description',`dr_id`='$dr', `pat_id`='$pat_id' WHERE appo_id='$id'";
         if (!$conn) {

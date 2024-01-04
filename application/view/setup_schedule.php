@@ -26,9 +26,11 @@ include '../include/sidebar.php';
         <p class='text-muted'>This Schedule Will Be Available On Public </p>
         <div class="row">
             <div class="col-xl-12">
-                <div class="card">
+                <div class="card bg-light border-0" style='border-radius: 18px; box-shadow: -1px 1px 53px -1px rgba(206,206,206,0.75);
+-webkit-box-shadow: -1px 1px 53px -1px rgba(206,206,206,0.75);
+-moz-box-shadow: -1px 1px 53px -1px rgba(206,206,206,0.75);'>
                     <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                        <strong>NOTE- </strong>It is not possible to create a schedule with the same date for a specific doctor. Each doctor can only have one schedule on any given date.
+                        <strong>NOTE- It is not possible to create a schedule with the same date for a specific doctor. Each doctor can only have one schedule on any given date.</strong>
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -101,6 +103,7 @@ include '../include/footer.php';
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
 
 <script src='../js/jquery-3.3.1.min.js'></script>
+<script src='../js/validations.js'></script>
 <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
 <script src="../iziToast-master/dist/js/iziToast.js"></script>
 <script src="../iziToast-master/dist/js/iziToast.min.js"></script>
@@ -113,7 +116,7 @@ include '../include/footer.php';
                 dataType: "JSON",
                 url: "../Api/schedule.api.php",
                 data: {
-                    action: "validateSchedule",
+                    action: "validateScheduleForAdminPortal",
                     dr: $('.doctors').val(),
                     date: date
                 },
@@ -129,6 +132,9 @@ include '../include/footer.php';
         }
         $('.back').click(() => window.location.href = "./schedule.php")
         $(".create").click(() => {
+            console.log("today ",
+                new Date(), "  selected  ", $(".date").val())
+            console.log(validDate($(".date").val()))
 
             if ($(".doctors").val() == "" || $(".date").val() == "" || $(".from_time").val() == "" || $('.to_time').val() == "" ||
                 $(".duration").val() == "" || $('.price').val() == "" || $(".range").val() == "") {
@@ -136,7 +142,10 @@ include '../include/footer.php';
                 return;
             }
 
-
+            if (!validDate($(".date").val())) {
+                displayToast("Schedule Date must be today's date or greater date", "error", 4000)
+                return;
+            }
 
             if (parseInt($('.duration').val()) > 90 || parseInt($('.duration').val()) < 10) {
                 displayToast("duration must be anywhere between 10 and 90 minutes.", "error", 4000)
@@ -156,7 +165,7 @@ include '../include/footer.php';
                 available: "yes",
                 price: $('.price').val(),
                 duration: $('.duration').val(),
-                action: "createSchedule"
+                action: "createScheduleFromAdminPortal"
 
             }
             validateSchedule($(".date").val(), res => {

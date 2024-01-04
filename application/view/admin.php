@@ -136,7 +136,7 @@ include '../include/footer.php';
 <script>
     $(document).ready(() => {
         $(".showPass").on("change", function(e) {
-            showAndHidePass(e.target.checked,$(".password"));
+            showAndHidePass(e.target.checked, $(".password"));
         })
         $(".add").click(() => {
             $(".adminModal").modal("show")
@@ -279,8 +279,8 @@ include '../include/footer.php';
                         tr += `<td>${value.username}</td>`
                         tr += `<td>${value.email}</td>`
                         tr += `<td>${value.status}</td>`
-                        tr += `<td><a class='btn btn-success editButton' editID=${value.admin_id}>Edit</a>
-                     <a class='btn btn-danger deleteAdmin' delID=${value.admin_id}>Delete</a></td>`
+                        tr += `<td><a class='btn btn-success editButton text-light fw-bold' editID=${value.admin_id}>Edit</a>
+                     <a class='btn btn-danger deleteAdmin text-light fw-bold'  delID=${value.admin_id}>Delete</a></td>`
                         tr += '</tr>'
                     })
                     $(".table tbody").html(tr);

@@ -30,8 +30,10 @@ include '../include/sidebar.php';
 
         <div class="row">
             <div class="col-xl-12">
-                <div class="card">
-                    <div class="card-header">
+                <div class="card bg-light border-0" style='border-radius: 18px; box-shadow: -1px 1px 53px -1px rgba(206,206,206,0.75);
+-webkit-box-shadow: -1px 1px 53px -1px rgba(206,206,206,0.75);
+-moz-box-shadow: -1px 1px 53px -1px rgba(206,206,206,0.75);'>
+                    <div class="card-header border-0">
                         <h5>Reminders</h5>
                         <button id="addNew" data-toggle="modal" data-target="#exampleModal" class="btn btn-success float-right add">Add New</button>
                     </div>
@@ -188,8 +190,12 @@ include '../include/footer.php';
     $(document).ready(() => {
 
         $(".patients").change(() => {
-            if ($(".patients").val() == "")
+            if ($(".patients").val() == "") {
+                var option = "<option value=''>Select</option>"
+                $('.appointment_id').html(option);
                 return;
+            }
+
 
             fetchAndFill($(".patients").val(), res => {
                 var {
@@ -371,8 +377,8 @@ include '../include/footer.php';
                         else
                             tr += `<td class='text-danger fw-bold'>${value.isRead}</td>`
 
-                        tr += `<td><a class='btn btn-success editButton' editID=${value.id}}>Edit</a>
-                      <a class='btn btn-danger deleteReminder' delID=${value.id}>Delete</a></td>`
+                        tr += `<td><a class='btn btn-success editButton text-light fw-bold' editID=${value.id}}>Edit</a>
+                      <a class='btn btn-danger deleteReminder text-light fw-bold' delID=${value.id}>Delete</a></td>`
                         tr += '</tr>'
 
                         console.log(value)
@@ -589,7 +595,7 @@ include '../include/footer.php';
                         if (hasData) {
                             $(".appointment_id").attr("disabled", false);
                             data.forEach(value => {
-                                option += `<option value='${value.appo_id}'>${value.appo_date}</option>`;
+                                option += `<option value='${value.appo_id}'>${value.appo_date} - ${value.appo_id}</option>`;
                             })
                             $(".appointment_id").html(option);
 

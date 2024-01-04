@@ -544,11 +544,18 @@ include '../include/footer.php';
             var id = $(this).attr("viewID");
             readPrintableData(id, (res) => {
                 $('.body-content').html(`
-                
-                 <img src="http://localhost/Doctor-Appontment/application/images/doctor-logo.png" alt="" class="image-fluid w-100">
+                   <h4>Doctor Care Appointment</h4>
+                 <span>View & Print Doctor's Data</span>
                 <br>
                 <br>
                 <br>
+               
+ <div class="mb-2">
+                    <strong>Card Number : </strong><h3 class='float-right'>${res.data[0].card}</h3>
+
+                </div>
+                <hr>
+
                 <h6>Patient Details</h6>
                 <table style="border-collapse: collapse; width: 100%;" class='mb-4'>
                     <thead>
@@ -746,43 +753,43 @@ include '../include/footer.php';
                         return;
                     }
                     data.forEach(value => {
-                            tr += `<td>${value.appo_id}</td>`
-                            tr += `<td>${value.appo_date}</td>`
-                            // tr += `<td>${value.time}</td>`
-                            tr += `<td>${value.diagnose}</td>`
-                            tr += `<td>${value.patient}</td>`
-                            if (value.status.toLowerCase() == "pending")
-                                tr += `<td>
+                        tr += `<td>${value.appo_id}</td>`
+                        tr += `<td>${value.appo_date}</td>`
+                        // tr += `<td>${value.time}</td>`
+                        tr += `<td>${value.diagnose}</td>`
+                        tr += `<td>${value.patient}</td>`
+                        if (value.status.toLowerCase() == "pending")
+                            tr += `<td>
                         
                             <a class='btn btn-danger text-light confirm' statusID='${value.appo_id}'>${value.status}</a>
                             </td>`
-                            else if (value.status.toLowerCase() == "completed")
-                                tr += `<td >
+                        else if (value.status.toLowerCase() == "completed")
+                            tr += `<td >
                          <a class='btn btn-success text-light confirm' statusID='${value.appo_id}'>${value.status}</a>
                             </td>`
-                            else if (value.status.toLowerCase() == "inprogress")
-                                tr += `<td>
+                        else if (value.status.toLowerCase() == "inprogress")
+                            tr += `<td>
                          <a class='btn btn-warning confirm' statusID='${value.appo_id}'>${value.status}</a></td>`
-                            else
-                                tr += `<td>
+                        else
+                            tr += `<td>
                         
                             <a class='btn btn-danger text-light confirm' statusID='${value.appo_id}'>${value.status}</a>
                             </td>`
-                            tr += `<td>
+                        tr += `<td>
                     
                      <a class="btn btn-primary viewAppo text-light" viewID=${value.appo_id}><i class="fa-solid fa-eye"></i></a>
                      </td>`
 
 
-                            tr += '</tr>'
-                        })
+                        tr += '</tr>'
+                    })
                     //      <
                     //     a class = 'btn btn-danger text-light deleteAppointment'
                     // delID = $ {
                     //         value.appo_id
                     //     } > < i class = "fa-solid fa-rotate-left" > < /i></a >
 
-                        $(".table tbody").html(tr);
+                    $(".table tbody").html(tr);
                     $(".table").DataTable();
 
                     console.log("data is ", data)

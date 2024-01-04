@@ -12,31 +12,34 @@ include '../include/sidebar.php';
 <!--**********************************
             Content body start
         ***********************************-->
-<div class="content-body">
+<div class="content-body bg-light">
     <!-- row -->
     <div class="container-fluid">
         <div class="row">
             <div class="col-lg-3 col-sm-6">
-                <div class="card text-light" style="background: #79155B;">
+                <div class="card text-light" style="background: #525CEB;">
                     <div class="stat-widget-two card-body">
                         <div class="stat-content text-light">
-                            <div class="stat-text text-light">Total Doctors <?php echo $_SESSION['type'] ?> </div>
-                            <div class="stat-digit text-light doctors">
-
-                                8500
+                            <div class="stat-content">
+                                <div class="stat-text text-light">Total Doctors</div>
+                                <div class="stat-digit text-light">
+                                    <h2 class='doctors text-light fw-bold'></h2>
+                                </div>
+                                <i class="fa-solid fa-user-pen"></i>
                             </div>
-                            <i class="fa-solid fa-user-doctor"></i>
                         </div>
 
                     </div>
                 </div>
             </div>
             <div class="col-lg-3 col-sm-6">
-                <div class="card text-light" style="background: #2E4374;">
+                <div class="card text-light" style="background: #7E30E1;">
                     <div class="stat-widget-two card-body">
                         <div class="stat-content">
                             <div class="stat-text text-light">Total Users</div>
-                            <div class="stat-digit text-light admins"> 7800</div>
+                            <div class="stat-digit text-light">
+                                <h2 class='admins text-light fw-bold'></h2>
+                            </div>
                             <i class="fa-solid fa-user-pen"></i>
                         </div>
                         <!-- <div class="progress">
@@ -46,11 +49,13 @@ include '../include/sidebar.php';
                 </div>
             </div>
             <div class="col-lg-3 col-sm-6">
-                <div class="card text-light" style="background: #5B0888;">
+                <div class="card text-light" style="background: #49108B;">
                     <div class="stat-widget-two card-body">
                         <div class="stat-content">
                             <div class="stat-text text-light">Patients</div>
-                            <div class="stat-digit text-light patients"> 500</div>
+                            <div class="stat-digit text-light">
+                                <h2 class='patients text-light fw-bold'></h2>
+                            </div>
                             <i class="fa-solid fa-suitcase-medical"></i>
                         </div>
                         <!-- <div class="progress">
@@ -60,11 +65,13 @@ include '../include/sidebar.php';
                 </div>
             </div>
             <div class="col-lg-3 col-sm-6">
-                <div class="card text-light" style="background: #004225;">
+                <div class="card text-light" style="background: #11235A">
                     <div class="stat-widget-two card-body">
                         <div class="stat-content">
                             <div class="stat-text text-light">Registered Hospitals</div>
-                            <div class="stat-digit text-light hospitals"> 900</div>
+                            <div class="stat-digit text-light">
+                                <h2 class='hospitals text-light fw-bold'></h2>
+                            </div>
                             <i class="fa-solid fa-hospital"></i></i>
                         </div>
                         <!-- <div class="progress">
@@ -78,65 +85,75 @@ include '../include/sidebar.php';
         </div>
 
         <div class="row">
-            <div class="col-6">
-                <div class="card">
-                    <div class="card-header">
-                        <h5>Pending Appointments</h5>
-                    </div>
+
+            <div class="col-12">
+                <div class="card bg-light border-0" style='border-radius: 18px; box-shadow: -1px 1px 53px -1px rgba(206,206,206,0.75);
+-webkit-box-shadow: -1px 1px 53px -1px rgba(206,206,206,0.75);
+-moz-box-shadow: -1px 1px 53px -1px rgba(206,206,206,0.75);'>
+
                     <div class="card-body">
+                        <h5 class='fw-bold'>Pending Appointments</h5>
+                        <p class='text-muted'>View Pending appointments/ active </p>
+
                         <div class="no-app my-2"></div>
                         <table class="table table-bordered pending">
                             <thead>
                                 <tr>
 
-                                    <th scope="col">Date</th>
-                                    <th scope="col">Doctor</th>
-                                    <th scope="col">Patient</th>
-                                    <th scope="col">Status</th>
+                                    <th scope="col" class='fw-bold'>Date</th>
+                                    <th scope="col" class='fw-bold'>Doctor</th>
+                                    <th scope="col" class='fw-bold'>Patient</th>
+                                    <th scope="col" class='fw-bold'>Status</th>
                                 </tr>
                             </thead>
                             <tbody>
 
 
                             </tbody>
+                            <tfoot>
+                                <tr>
+
+                                    <th scope="col" class='fw-bold'>Date</th>
+                                    <th scope="col" class='fw-bold'>Doctor</th>
+                                    <th scope="col" class='fw-bold'>Patient</th>
+                                    <th scope="col" class='fw-bold'>Status</th>
+                                </tr>
+                            </tfoot>
                         </table>
                     </div>
                 </div>
 
             </div>
-            <div class="col-6">
-                <div class="card">
-                    <div class="card-header">
+            <div class="col-12">
+                <div class="card bg-light border-0" style='border-radius: 18px; box-shadow: -1px 1px 53px -1px rgba(212,224,239,0.75);
+-webkit-box-shadow: -1px 1px 53px -1px rgba(212,224,239,0.75);
+-moz-box-shadow: -1px 1px 53px -1px rgba(212,224,239,0.75);'>
+                    <!-- <div class="card-header">
                         <h5>Unverified Doctors</h5>
-                    </div>
+                    </div> -->
                     <div class="card-body">
+
+                        <h5 class='fw-bold' style='color: #940B92; font-weight: bolder'>unverified Doctors</h5>
+                        <p class='text-muted'>View Pending accounts <a href='./doctors.php' class='btn'>view more</a> </p>
+                        <hr>
                         <div class="no-unver my-2"></div>
-                        <table class="table table-bordered Unverified">
-                            <thead>
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Image</th>
+                        <div class="row un-verify">
 
-                                </tr>
-                            </thead>
-                            <tbody>
+                        </div>
 
-
-
-                            </tbody>
-                        </table>
                     </div>
                 </div>
 
             </div>
 
             <div class="col-12">
-                <div class="card">
-                    <div class="card-header">
-                        <h5>Today Schedules</h5>
-                    </div>
+                <div class="card bg-light border-0" style='border-radius: 18px; box-shadow: -1px 1px 53px -1px rgba(206,206,206,0.75);
+-webkit-box-shadow: -1px 1px 53px -1px rgba(206,206,206,0.75);
+-moz-box-shadow: -1px 1px 53px -1px rgba(206,206,206,0.75);'>
+
                     <div class="card-body">
+                        <h5 class='fw-bold'>Today's Schedules</h5>
+                        <p class='text-muted'>only you can view (today's date)</p>
                         <div class="no-sch my-2"></div>
                         <table class="table table-bordered todays">
                             <thead>
@@ -224,17 +241,25 @@ include '../include/footer.php';
 
                     var tr = "<tr>"
                     res.data.forEach(value => {
-                        tr += `<td>${value.dr_id}</td>`
-                        tr += `<td>${value.name}</td>`
-                        if (value.profile_image != "no_profile" && value.profile_image != "no_image")
-                            tr += `<td><img src='../uploads/${value.profile_image}' style='width: 40px; height: 40px; border-radius: 50%'/></td>`
-                        else
-                            tr += `<td><img src='../uploads/default.png' style='width: 50px; height: 50px; border-radius: 50%'/></td>`
+                        $('.un-verify').append(`
+                       <div class="col-lg-4 col-md-12 col-sm-12">
+                                <div class="card text-light border-0" style='background: #537FE7'>
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <div class="info">
+                                                <h6 class='text-light fw-bold'>Dr. ${value.name}</h6>
+                                                <span>${value.pro_name}</span>
+                                            </div>
+                                            <img src="../uploads/${value.profile_image}" alt="" class="img-fluid rounded-circle" style='width: 70px; height: 70px'>
 
-                        // tr += `<td>${value.profile_image}</td>`
-                        tr += '</tr>'
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                       
+                       `)
                     })
-                    $(".Unverified tbody").html(tr)
+
                 },
                 error: (res) => {
                     console.log(res)

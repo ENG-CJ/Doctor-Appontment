@@ -67,7 +67,9 @@ include '../include/sidebar.php';
                 <div class="m-2 no-data">
 
                 </div>
-                <div class="card print-area">
+                <div style='border-radius: 18px; box-shadow: -1px 1px 53px -1px rgba(206,206,206,0.75);
+-webkit-box-shadow: -1px 1px 53px -1px rgba(206,206,206,0.75);
+-moz-box-shadow: -1px 1px 53px -1px rgba(206,206,206,0.75);'  class="card bg-light border-0 print-area">
                     <div class="card-header">
                         <h5>All Doctors</h5>
                         <!-- <button id="addNew" data-toggle="modal" data-target="#exampleModal"
@@ -839,7 +841,7 @@ include '../include/footer.php';
                     buttons: [
                         'csv', 'pdf', 'print',
                         {
-                            extend: 'pdf',
+                            extend: 'excel',
                             title: 'PDF REPORT',
                             text: '<i class="fa fa-table fainfo" aria-hidden="true" ></i>',
                             titleAttr: 'Export Excel',

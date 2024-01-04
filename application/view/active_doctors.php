@@ -25,7 +25,9 @@ include '../include/sidebar.php';
         <p class='text-muted'>Click On Pick Button To make Specific Appointment</p>
         <div class="row">
             <div class="col-xl-12">
-                <div class="card">
+                <div class="card border-0" style='border-radius: 18px; box-shadow: -1px 1px 53px -1px rgba(206,206,206,0.75);
+-webkit-box-shadow: -1px 1px 53px -1px rgba(206,206,206,0.75);
+-moz-box-shadow: -1px 1px 53px -1px rgba(206,206,206,0.75);'>
 
                     <div class="card-block table-border-style p-3">
                         <div class="row">
@@ -44,9 +46,9 @@ include '../include/sidebar.php';
                                 </div>
                             </div>
                             <!-- <div class="col-12 mt-4">
-                                <button class='btn btn-success create'>Create</button>
-                                <button class='btn btn-primary'>Back</button>
-                            </div> -->
+                                <button class=' btn btn-success create'>Create</button>
+                    <button class='btn btn-primary'>Back</button>
+                </div> -->
                         </div>
                     </div>
                 </div>
@@ -118,21 +120,23 @@ include '../include/footer.php';
                             return;
                         }
                         data.forEach(value => {
-                            var name = value.drName.split(" ")[0];
+                            var name = value.drName;
                             var review = 0;
 
                             getReviewNumber(value.drID, res => review = res);
                             console.log("the profile is", value.profile_image)
                             $('.all-doctors').append(`
                     <div class="col-6">
-                                        <div class="card">
+                                        <div class="card bg-light border-1" style='border-radius: 18px; box-shadow: -1px 1px 36px -23px rgba(231,168,223,0.75);
+-webkit-box-shadow: -1px 1px 36px -23px rgba(231,168,223,0.75);
+-moz-box-shadow: -1px 1px 36px -23px rgba(231,168,223,0.75);'>
                                             <div class="card-header">
                                                 <h6>From: ${value.hosName}</h6>
                                             </div>
                                             <div class="card-body">
                                                 <div class="row">
                                                     <div class="col-6">
-                                                        <img src="../uploads/${value.profile_image}" class='img-fluid' style="border-radius: 10px; border: 1px solid green;" alt="">
+                                                        <img src="../uploads/${value.profile_image}" class='img-fluid' style="border-radius: 30px;border: 1px solid green; width: 200px; height: 230px" alt="">
                                                         <div class="my-2 ml-2">
                                                         <span class="badge badge-pill badge-primary">Reviews(All) - ${review}</span>
                                                            
@@ -282,28 +286,31 @@ include '../include/footer.php';
                     //     <i class="fa-solid fa-circle-check"></i>
                     //     Verified</label>
                     data.forEach(value => {
-                        var name = value.drName.split(" ")[0];
+                        var name = value.drName;
                         var review = 0;
 
                         getReviewNumber(value.drID, res => review = res);
                         console.log("review is 4", review)
                         $('.all-doctors').append(`
                     <div class="col-6">
-                                        <div class="card">
+                                        <div class="card bg-light border-1" style='border-radius: 18px; box-shadow: -1px 1px 36px -23px rgba(231,168,223,0.75);
+-webkit-box-shadow: -1px 1px 36px -23px rgba(231,168,223,0.75);
+-moz-box-shadow: -1px 1px 36px -23px rgba(231,168,223,0.75);'>
                                             <div class="card-header">
                                                 <h6>From: ${value.hosName}</h6>
                                             </div>
                                             <div class="card-body">
-                                                <div class="row">
-                                                    <div class="col-6">
-                                                        <img src="../uploads/${value.profile_image}" class='img-fluid' style="border-radius: 10px; border: 1px solid green;" alt="">
+                                          
+                                            <div class="all d-flex">
+                                                    <div class="left mr-3">
+                                                        <img src="../uploads/${value.profile_image}" class='img-fluid' style="border-radius: 30px;border: 1px solid green; width: 200px; height: 230px" alt="">
                                                         <div class="my-2 ml-2">
                                                         <span class="badge badge-pill badge-primary">Reviews(All) - ${review}</span>
                                                            
                                                         </div>
 
                                                     </div>
-                                                    <div class="col-6">
+                                                    <div class="right">
                                                        <div class="d-flex align-items-center">
                                                        <div class="name">
                                                         <strong>Dr. Name</strong><br>
@@ -318,7 +325,8 @@ include '../include/footer.php';
                                                         <strong>Mobile (Emerg Number)</strong><br>
                                                         <label for="">${value.mobile}</label>
                                                     </div>
-                                                </div>
+                                            </div>
+                                            
                                             </div>
                                             <div class="card-footer">
                                                 <button class='btn btn-success pickup w-100' drID=${value.drID}>

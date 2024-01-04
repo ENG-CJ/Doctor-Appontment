@@ -35,8 +35,10 @@ h
 
         <div class="row">
             <div class="col-xl-12">
-                <div class="card">
-                    <div class="card-header">
+                <div class="card bg-light border-0" style='border-radius: 18px; box-shadow: -1px 1px 53px -1px rgba(206,206,206,0.75);
+-webkit-box-shadow: -1px 1px 53px -1px rgba(206,206,206,0.75);
+-moz-box-shadow: -1px 1px 53px -1px rgba(206,206,206,0.75);'>
+                    <div class="card-header border-0">
                         <h5>Appointments</h5>
                         <button id="addNew" data-toggle="modal" data-target="#exampleModal" class="btn btn-dark float-right create">
                             <i class="fa-regular fa-flag"></i>
@@ -481,7 +483,7 @@ include '../include/footer.php';
                 success: (res) => {
 
                     console.log(res)
-                    loadAppointments()
+                    loadAppointmentsForAdmin()
                     $('.statusModal').modal("hide")
                     // alert(res.message)
                 },
@@ -515,9 +517,10 @@ include '../include/footer.php';
                     success: (res) => {
 
                         console.log(res)
-                        loadAppointments()
+
                         displayToast("Appointment Has been updated", "success", 3000);
                         $(".editAppointmentModal").modal("hide")
+                        loadAppointmentsForAdmin()
                     },
                     error: (res) => {
                         console.log(res)
@@ -546,12 +549,24 @@ include '../include/footer.php';
                     url: "../Api/doctor.api.php",
                     success: (res) => {
                         if (res.data.length > 0) {
-                            $(".date").attr("disabled", true)
-                            option = `<option value='${res.data[0].date}'>${res.data[0].date}</option>`
-                            $('.date').html(option)
-                            $('.date').css({
-                                border: "1px solid grey"
-                            })
+                            if (res.data.length > 1) {
+                                $(".date").attr("disabled", false)
+                                var op = `<option value=''>Select Appointment Date</option>`
+                                res.data.forEach(value => {
+                                    op += ` <option value='${value.date}'>${value.date}</option>`
+
+                                })
+                                $(".date").html(op)
+
+                            } else {
+                                $(".date").attr("disabled", true)
+                                option = `<option value='${res.data[0].date}'>${res.data[0].date}</option>`
+                                $('.date').html(option)
+                                $('.date').css({
+                                    border: "1px solid grey"
+                                })
+                            }
+
                         } else {
 
                             option2 = "<option value=''>Related Data Error (No Appointment Date)</option>"
@@ -789,6 +804,11 @@ include '../include/footer.php';
                 <br>
                 <br>
                 <br>
+                 <div class="mb-2">
+                    <strong>Card Number : </strong><h3 class='float-right'>${res.data[0].card}</h3>
+                    <p class='text-muted fw-bold'>This card number serves as your unique identifier within the appointment queue.</p>
+                </div>
+                <hr>
                 <h6>Patient Details</h6>
                 <table style="border-collapse: collapse; width: 100%;" class='mb-4'>
                     <thead>
@@ -846,6 +866,7 @@ include '../include/footer.php';
                        
                     </tbody>
                 </table>
+               
                 <div class="my-1">
                     <strong>Card Price : </strong><span>$${res.data[0].card_price}</span>
                 </div>
@@ -945,7 +966,7 @@ include '../include/footer.php';
                                 swal("Data has been removed", {
                                     icon: "success",
                                 });
-                                loadAppointments();
+                                loadAppointmentsForAdmin();
                             },
                             error: (res) => {
                                 console.log(res)
@@ -1012,73 +1033,7 @@ include '../include/footer.php';
 
         })
 
-        const loadAppointments = () => {
-            $.ajax({
-                method: "POST",
-                dataType: "JSON",
-                data: {
-                    "action": "loadAppointmentsForDoctor"
-                },
-                url: "../Api/appointments.api.php",
-                success: (res) => {
-                    var tr = "<tr>"
-                    var {
-                        data
-                    } = res;
-                    if (data.length == 0) {
-                        $('.list_appointments').html(`
-                       <div class="alert alert-info" role="alert">
-   Currently, there are no available appointments for you.<a href="./active_doctors.php" class="alert-link">Please schedule an appointment now</a> or click <strong>Make booking</strong> Button
-</div>
-                        
-                        `)
-                        return;
-                    }
-                    data.forEach(value => {
-                        tr += `<td>${value.appo_id}</td>`
-                        tr += `<td>${value.appo_date}</td>`
-                        // tr += `<td>${value.time}</td>`
-                        tr += `<td>${value.diagnose}</td>`
-                        tr += `<td class='patient_name'>${value.patient}</td>`
-                        tr += `<td>${value.doctor}</td>`
-                        if (value.status.toLowerCase() == "pending")
-                            tr += `<td>
-                        
-                            <a class='btn btn-danger text-light confirm' statusID='${value.appo_id}'>${value.status}</a>
-                            </td>`
-                        else if (value.status.toLowerCase() == "completed")
-                            tr += `<td >
-                         <a class='btn btn-success text-light confirm' statusID='${value.appo_id}'>${value.status}</a>
-                            </td>`
-                        else if (value.status.toLowerCase() == "inprogress")
-                            tr += `<td>
-                         <a class='btn btn-warning confirm' statusID='${value.appo_id}'>${value.status}</a></td>`
-                        else
-                            tr += `<td>
-                        
-                            <a class='btn btn-danger text-light confirm' statusID='${value.appo_id}'>${value.status}</a>
-                            </td>`
 
-
-                        tr += `<td>
-                     <a class='btn btn-danger text-light deleteAppointment' delID=${value.appo_id}><i class="fa-solid fa-rotate-left"></i></a>
-                     <a class="btn btn-primary viewAppo text-light" viewID=${value.appo_id}><i class="fa-solid fa-eye"></i></a>
-                     </td>`
-
-
-                        tr += '</tr>'
-                    })
-                    $(".table tbody").html(tr);
-                    $(".table").DataTable();
-
-                    console.log("data is ", data)
-                },
-                error: (res) => {
-                    console.log("There is an error")
-                    console.log(res)
-                },
-            })
-        }
         const loadAppointmentsForAdmin = () => {
             $.ajax({
                 method: "POST",
@@ -1102,7 +1057,9 @@ include '../include/footer.php';
                         `)
                         return;
                     }
+                    $(".table tbody").html("");
                     data.forEach(value => {
+                        console.log(value.appo_date)
                         tr += `<td>${value.appo_id}</td>`
                         tr += `<td>${value.appo_date}</td>`
                         // tr += `<td>${value.time}</td>`

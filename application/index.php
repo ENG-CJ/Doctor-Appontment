@@ -247,7 +247,12 @@ include './include/links.php';
 
                 data
               } = res;
+              loginCount = 0;
               console.log(data)
+              if (loginCount == 3) {
+                $(".login").attr("disabled", true);
+                return;
+              }
               if (isFound) {
                 if (data.status.toLowerCase() == "active") {
                   sessionStorage.setItem('username', data.name);
@@ -259,7 +264,10 @@ include './include/links.php';
 
 
               } else {
+               
                 displayMessage("Incorrect Email or Password ")
+
+
               }
             },
             error: (err) => {

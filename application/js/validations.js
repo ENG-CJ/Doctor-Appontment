@@ -22,6 +22,39 @@ function adminCheck(email, mobile, table, username, callback) {
     },
   });
 }
+ function validDate(selectedDate) {
+  var today = new Date();
+  var day = String(today.getDate()).padStart(2, "0");
+  var month = String(today.getMonth() + 1).padStart(2, "0"); // Months are zero-based
+  var year = today.getFullYear();
+  var formattedDate = `${year}-${month}-${day}`;
+  console.log("Formatted date:", formattedDate);
+
+   if (selectedDate < formattedDate) {
+     return false;
+   }
+   return true;
+ }
+function checkAndRetrieveCardNumber(date, getCardNumber) {
+  data = {
+    date: date,
+    action: "checkAndRetrieveCardNumber",
+  };
+  $.ajax({
+    method: "POST",
+    dataType: "json",
+    data: data,
+    url: "../Api/appointments.api.php",
+    success: (res) => {
+      getCardNumber(res);
+    },
+    error: (err) => {
+      
+      console.log(err);
+      getCardNumber(null); // Assuming you want to handle errors by passing false
+    },
+  });
+}
 
 function containsOnlyAlphanumeric(username) {
   const pattern = /^[a-zA-Z][a-zA-Z0-9]*$/;

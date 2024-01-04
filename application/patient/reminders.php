@@ -40,7 +40,7 @@ h
 
         <div class="row">
             <div class="col-xl-12">
-                <div class="lists">
+                <div class="row lists">
 
                 </div>
 
@@ -91,7 +91,7 @@ h
                 </button>
             </div>
             <div class="modal-body p-2">
-                
+
                 <div class="my-2">
                     <label for="">Title [Optional]</label>
                     <input type="text" name="" value="Reminder" id="title" class="form-control title">
@@ -172,14 +172,20 @@ include '../include/footer.php';
 
                         res.data.forEach(value => {
                             $(".lists").append(`
+                            <div class="col-lg-6 col-md-6 col-sm-12">
+                             <div class="card border-0 bg-light"  style='border-radius: 18px; box-shadow: -1px 1px 53px -1px rgba(179,180,186,0.75);
+-webkit-box-shadow: -1px 1px 53px -1px rgba(179,180,186,0.75);
+-moz-box-shadow: -1px 1px 53px -1px rgba(179,180,186,0.75);'>
+                           <div class='card-body'>
+                            <h4>${value.title}</h4>
+                                <p class='fw-bold text-muted'>${value.message}</p>
+                                <span>${value.createdAt}</span>
+                           </div>
                             
-                             <div class="jumbotron jumbotron-fluid p-2 mb-2" style="border-radius: 10px">
-                    <div class="container">
-                        <h1 class="display-6">${value.title}</h1>
-                        <p class="lead">${value.message}</p>
-                        <p class="lead">Configured At ${value.createdAt}</p>
-                    </div>
-                </div>
+                            </div>
+                            </div>
+                           
+
                             
                             `)
                         })

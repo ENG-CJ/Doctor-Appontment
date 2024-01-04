@@ -21,7 +21,9 @@ include '../include/sidebar.php';
         <!-- row -->
         <h6>Make an appointment </h6>
         <p class='text-muted'>NB: This appointment will automatically or the owner disabled when the time is reached.</p>
-        <div class="card">
+        <div class="card border-0 bg-light" style='border-radius: 18px; box-shadow: -1px 1px 53px -1px rgba(179,180,186,0.75);
+-webkit-box-shadow: -1px 1px 53px -1px rgba(179,180,186,0.75);
+-moz-box-shadow: -1px 1px 53px -1px rgba(179,180,186,0.75);'>
             <div class="card-header">Selected Doctor</div>
             <div class="card-body">
                 <div class="row doctor_details">
@@ -29,7 +31,9 @@ include '../include/sidebar.php';
                 </div>
             </div>
         </div>
-        <div class="card">
+        <div class="card border-0 bg-light" style='border-radius: 18px; box-shadow: -1px 1px 53px -1px rgba(179,180,186,0.75);
+-webkit-box-shadow: -1px 1px 53px -1px rgba(179,180,186,0.75);
+-moz-box-shadow: -1px 1px 53px -1px rgba(179,180,186,0.75);'>
             <div class="card-header">Available Schedules For The Selected Doctor</div>
             <div class="card-body">
                 <div class="row available_schedules">
@@ -53,7 +57,9 @@ include '../include/sidebar.php';
                 </div>
             </div>
         </div>
-        <div class="card">
+        <div class="card border-0 bg-light" style='border-radius: 18px; box-shadow: -1px 1px 53px -1px rgba(179,180,186,0.75);
+-webkit-box-shadow: -1px 1px 53px -1px rgba(179,180,186,0.75);
+-moz-box-shadow: -1px 1px 53px -1px rgba(179,180,186,0.75);'>
             <div class="card-header">Doctor Reviews</div>
             <div class="card-body">
                 <div class="row">
@@ -175,6 +181,7 @@ include '../include/footer.php';
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
 
 <script src='../js/jquery-3.3.1.min.js'></script>
+<script src='../js/utils.js'></script>
 <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
 <script src="../iziToast-master/dist/js/iziToast.js"></script>
 <script src="../iziToast-master/dist/js/iziToast.min.js"></script>
@@ -314,7 +321,10 @@ include '../include/footer.php';
 
         }
         $(document).on("click", ".create", function() {
-            alert($('.method').val())
+            if ($(".date").val() == "" || $(".diagnose").val() == "" || $(".description").val() == "" || $(".patients").val() == "" || $(".dr").val() == "") {
+                displayToast("All Fields Are required", "error", 4000);
+                return;
+            }
             var data = {
                 appointment_date: $('.date').val(),
                 diagnose: $('.diagnose').val(),
@@ -532,10 +542,12 @@ include '../include/footer.php';
                     } = res;
                     $(".doctor_details").html(`
                     
-                        <div class="col-5">
-                        <img src="../uploads/${data[0].profile_image}" alt="" class="img-fluid w-100" style='width: 100px; height: auto; border-radius: 20px'>
+                        <div class="col-6">
+                  <div class="all-detals d-flex">
+                        <div class="left mr-3">
+                        <img src="../uploads/${data[0].profile_image}" alt="" class="img-fluid" style="border-radius: 30px;border: 1px solid green; width: 220px; height: 300px">
                     </div>
-                    <div class="col-7">
+                    <div class="right">
                         <strong>Full Name</strong>
                         <p class='ml-2'>${data[0].drName}</p>
                         <strong>Emergency Number</strong>
@@ -545,7 +557,11 @@ include '../include/footer.php';
                         <strong>Hospital (work-in)</strong>
                         <p class='ml-2'>${data[0].hosName}</p>
                     </div>
-                    <div class="col-12">
+                  </div>
+
+                    </div>
+                  
+                    <div class="col-6">
                         <strong>Description (Qualifications)</strong>
                         <p>${data[0].drDescription}.</p>
                     </div>

@@ -24,7 +24,9 @@ include '../include/sidebar.php';
         <p class='text-muted'>Click On Pick Button To make Specific Appointment</p>
         <div class="row">
             <div class="col-xl-12">
-                <div class="card">
+                <div class="card border-0" style='border-radius: 18px; box-shadow: -1px 1px 53px -1px rgba(206,206,206,0.75);
+-webkit-box-shadow: -1px 1px 53px -1px rgba(206,206,206,0.75);
+-moz-box-shadow: -1px 1px 53px -1px rgba(206,206,206,0.75);'>
 
                     <div class="card-block table-border-style p-3">
                         <div class="row">
@@ -125,9 +127,13 @@ include '../include/footer.php';
                                 review = res
                                 $('.all-doctors').append(`
                     <div class="col-6">
-                                        <div class="card">
+                  
+                                        <div class="card bg-light border-1"  style='border-radius: 18px; box-shadow: -1px 1px 36px -23px rgba(231,168,223,0.75);
+-webkit-box-shadow: -1px 1px 36px -23px rgba(231,168,223,0.75);
+-moz-box-shadow: -1px 1px 36px -23px rgba(231,168,223,0.75);'>
+                                         
                                             <div class="card-header">
-                                                <h6>From: ${value.hosName}</h6>
+                                                <h6>From: <strong>${value.hosName}</strong></h6>
                                             </div>
                                             <div class="card-body">
                                                 <div class="all d-flex">
@@ -164,7 +170,9 @@ include '../include/footer.php';
                                         </div>
                                     </div>`)
 
+
                             });
+
 
 
                         })
@@ -284,6 +292,7 @@ include '../include/footer.php';
                     }
                     var review = 0;
                     data.forEach(value => {
+                       
                         var name = value.drName;
 
 
@@ -292,9 +301,11 @@ include '../include/footer.php';
 
                             $('.all-doctors').append(`
                     <div class="col-6">
-                                        <div class="card">
+                                        <div class="card bg-light border-1"  style='border-radius: 18px; box-shadow: -1px 1px 36px -23px rgba(231,168,223,0.75);
+-webkit-box-shadow: -1px 1px 36px -23px rgba(231,168,223,0.75);
+-moz-box-shadow: -1px 1px 36px -23px rgba(231,168,223,0.75);'>
                                             <div class="card-header">
-                                                <h6>From: ${value.hosName}</h6>
+                                                <h6>From: <strong>${value.hosName}</strong></h6>
                                             </div>
                                             <div class="card-body">
                                                 <div class="all d-flex">
@@ -310,7 +321,7 @@ include '../include/footer.php';
                                                        <div class="d-flex align-items-center">
                                                        <div class="name">
                                                         <strong>Dr. Name</strong><br>
-                                                        <label for="">Dr. ${name}</label>
+                                                        <label for="">Dr. ${value.drName}</label>
                                                        </div>
                                                        <div class="mt-3 ml-1">
                                                        <img src="../uploads/ver_icon.png" class="img-fluid" style="width: 30px; height: 30px"/>

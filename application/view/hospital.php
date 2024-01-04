@@ -35,12 +35,16 @@ include '../include/sidebar.php';
 
         <div class="row">
             <div class="col-xl-12">
-                <div class="card">
-                    <div class="card-header">
+                <div class="card bg-light border-0" style='border-radius: 18px; box-shadow: -1px 1px 53px -1px rgba(206,206,206,0.75);
+-webkit-box-shadow: -1px 1px 53px -1px rgba(206,206,206,0.75);
+-moz-box-shadow: -1px 1px 53px -1px rgba(206,206,206,0.75);'>
+                    <!-- <div class="card-header">
                         <h5>All Hospitals</h5>
                         <button id="addNew" data-toggle="modal" data-target="#exampleModal" class="btn btn-primary float-right add">Add New Hospital</button>
-                    </div>
+                    </div> -->
                     <div class="card-block table-border-style p-3">
+                        <h5>All Hospitals</h5>
+                        <button id="addNew" data-toggle="modal" data-target="#exampleModal" class="btn btn-success add mb-3">Create New</button>
                         <div class="table-responsive">
 
                             <table class="table">
@@ -353,8 +357,8 @@ include '../include/footer.php'; ?>
                     tr += `<td>${value.hos_email}</td>`
                     tr += `<td>${value.location}</td>`
                     // tr += `<td>${value.description}</td>`
-                    tr += `<td><a class='btn btn-success editHospital' editID=${value.hospital_id}>Edit</a>
-                     <a class='btn btn-danger deleteHospital' delID=${value.hospital_id}>Delete</a></td>`
+                    tr += `<td><a class='btn btn-success editHospital text-light fw-bold' editID=${value.hospital_id}>Edit</a>
+                     <a class='btn btn-danger deleteHospital text-light fw-bold' delID=${value.hospital_id}>Delete</a></td>`
                     tr += '</tr>'
                 })
                 $(".table tbody").html(tr)

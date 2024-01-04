@@ -21,16 +21,20 @@ include '../include/sidebar.php';
         <!-- row -->
         <h6>Make an appointment </h6>
         <p class='text-muted'>NB: This appointment will automatically or the owner disabled when the time is reached.</p>
-        <div class="card">
-            <div class="card-header">Selected Doctor</div>
+        <div class="card border-0 bg-light" style='border-radius: 18px; box-shadow: -1px 1px 53px -1px rgba(179,180,186,0.75);
+-webkit-box-shadow: -1px 1px 53px -1px rgba(179,180,186,0.75);
+-moz-box-shadow: -1px 1px 53px -1px rgba(179,180,186,0.75);'>
+            <div class="card-header"><strong>Selected Doctor</strong></div>
             <div class="card-body">
                 <div class="row doctor_details">
 
                 </div>
             </div>
         </div>
-        <div class="card">
-            <div class="card-header">Available Schedules For The Selected Doctor</div>
+        <div class="card border-0 bg-light" style='border-radius: 18px; box-shadow: -1px 1px 53px -1px rgba(179,180,186,0.75);
+-webkit-box-shadow: -1px 1px 53px -1px rgba(179,180,186,0.75);
+-moz-box-shadow: -1px 1px 53px -1px rgba(179,180,186,0.75);'>
+            <div class="card-header"><strong>Available Schedules For The Selected Doctor</strong></div>
             <div class="card-body">
                 <div class="row available_schedules">
                     <table class="table table-striped">
@@ -53,10 +57,12 @@ include '../include/sidebar.php';
                 </div>
             </div>
         </div>
-        <div class="card">
-            <div class="card-header">Doctor Reviews</div>
-            <div class="card-body">
-                <div class="row">
+        <div class="card border-0 bg-light" style='border-radius: 18px; box-shadow: -1px 1px 53px -33px rgba(179,180,186,0.75);
+-webkit-box-shadow: -1px 1px 53px -33px rgba(179,180,186,0.75);
+-moz-box-shadow: -1px 1px 53px -33px rgba(179,180,186,0.75);'>
+            <div class="card-header"><strong>Doctor Reviews</strong></div>
+            <div class="card-body p-3">
+                <div class="row p-2">
                     <table class="table-striped satisfactions">
                         <thead>
                             <tr>
@@ -320,7 +326,11 @@ include '../include/footer.php';
 
         }
         $(document).on("click", ".create", function() {
-          
+            if ($(".date").val() == "" || $(".diagnose").val() == "" || $(".description").val() == "" || $(".patients").val() == "" || $(".dr").val() == "") {
+                displayToast("All Fields Are required", "error", 4000);
+                return;
+            }
+
             var data = {
                 appointment_date: $('.date').val(),
                 diagnose: $('.diagnose').val(),

@@ -30,8 +30,10 @@ include '../include/sidebar.php';
 
         <div class="row">
             <div class="col-xl-12">
-                <div class="card">
-                    <div class="card-header">
+                <div class="card bg-light border-0" style='border-radius: 18px; box-shadow: -1px 1px 53px -1px rgba(206,206,206,0.75);
+-webkit-box-shadow: -1px 1px 53px -1px rgba(206,206,206,0.75);
+-moz-box-shadow: -1px 1px 53px -1px rgba(206,206,206,0.75);'>
+                    <div class="card-header border-0">
                         <h5>Symptoms Data</h5>
                         <button id="addNew" data-toggle="modal" data-target="#exampleModal" class="btn btn-success float-right add">Add New</button>
                     </div>
@@ -302,8 +304,8 @@ include '../include/footer.php';
                         else
                             tr += `<td>${value.name}</td>`
                         tr += `<td>${value.description}</td>`
-                        tr += `<td><a class='btn btn-success editButton' editID=${value.diganose_id}}>Edit</a>
-                      <a class='btn btn-danger deleteDiagnose' delID=${value.diganose_id}>Delete</a></td>`
+                        tr += `<td><a class='btn btn-success editButton text-light fw-bold' editID=${value.diganose_id}}>Edit</a>
+                      <a class='btn btn-danger deleteDiagnose text-light fw-bold' delID=${value.diganose_id}>Delete</a></td>`
                         tr += '</tr>'
 
                         console.log(value)

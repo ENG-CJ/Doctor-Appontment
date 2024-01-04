@@ -4,8 +4,6 @@ include_once("../config/conn.db.php");
 
 class Admin extends DatabaseConnection
 {
-
-
     public function fetchingOne($conn)
     {
         extract($_POST);
@@ -119,6 +117,7 @@ class Admin extends DatabaseConnection
     public  function updateAdmin($_conn)
     {
         extract($_POST);
+        
         $response = array();
 
         $sql = "UPDATE admins set username='$username', email='$email', `status`='$status'  where admin_id='$id';";
